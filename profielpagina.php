@@ -23,12 +23,12 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-			<a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+			<a class="nav-item nav-link active" href="index.php">Home</a>
 			<a class="nav-item nav-link" href="#">About us</a>
 			<a class="nav-item nav-link" href="#">Latest Articles</a>
 			<a class="nav-item nav-link" href="#">Contact</a>
         </div>
-        <ul class="nav navbar-nav" style="margin-left:58%;">
+        <ul class="nav navbar-nav">
             <li><button type="submit" class="btn navbar-btn btn-success" name="login" id="login"  value="Log In">Log In</button></li>
         </ul>     
       </div>
@@ -46,39 +46,51 @@
       
     </div>
 	
+	<?php
+		$getUserDataStmt = $db->query("SELECT * FROM User WHERE UserID = 1");
+		
+		$UserData = $getUserDataStmt->fetch(PDO::FETCH_ASSOC);
+		
+		if(is_null($UserData['UserProfilePicture']))
+			$UserProfilePicture = "PROFILE_PICTURE_TEMPLATE";
+		else
+			$UserProfilePicture = $UserData['UserProfilePicture'];
+	?>
 	
 	<!-- This is the center column -->
-    <div class="col-md-6">
+    <div class="col-lg-6">
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>
-					<center><h1>Latest Articles</h1></center>
+					<center><h1> 
+						<?php
+							echo $UserData['UserName'];
+						?>
+					<span class="badge badge-success">Publisher</span></h1></center>
 				<hr>
 			</div>
 			
-			<!-- Start of Articles -->
+			<div class="row"> 
 			
-			<?php
-                $stmt1 = $db->query("SELECT * FROM article");
-                while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
-                    $test = $row1['ArticleID'];
-                    $stmt2 = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $test limit 1 ");
-                    $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-                    ?>
-                    <div class="card" style="width:100%; margin-bottom: 100px;">
-                        <img class="card-img-top" src="<?php echo $row2['FileName'] ?>" alt="File Image Missing" style="height:50%;width:100%;">
-                        <div class="card-body">
-                            <h4 class="card-title"><?php echo $row1['ArticleTitle']; ?></h4>
-                            <p class="card-text"><?php echo $row1['ArticleText']; ?></p>
-                            <a href="#" class="btn btn-primary">Read Article</a>
-                        </div>
-                    </div>
-                <?php } ?>
+			<div class="col-md">
 			
+				<h3 style="margin-left: 10%;">Bio</h3>
+				
+				<p style="margin-left: 10%;"><?php $myfile = fopen("loremipsum.txt", "r") or die("Unable to open file!");
+					echo fread($myfile,filesize("loremipsum.txt"));
+					fclose($myfile);?>
+				</p>
+			</div>
+
+			<div class="col-md">
+				<center><img src="images/<?php echo $UserProfilePicture;?>.jpg" style="width: 70%; height: 100%;"></center>
+			</div>
+			
+			</div>
     </div>
 	
 	
 	<!-- This is the right column -->
-    <div class="col-md">
+    <div class="col-lg">
 		<div id="right_block">
 			
 		</div>

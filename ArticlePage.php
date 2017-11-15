@@ -23,12 +23,12 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-			<a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+			<a class="nav-item nav-link active" href="index.php">Home</a>
 			<a class="nav-item nav-link" href="#">About us</a>
 			<a class="nav-item nav-link" href="#">Latest Articles</a>
 			<a class="nav-item nav-link" href="#">Contact</a>
         </div>
-        <ul class="nav navbar-nav" style="margin-left:58%;">
+        <ul class="nav navbar-nav">
             <li><button type="submit" class="btn navbar-btn btn-success" name="login" id="login"  value="Log In">Log In</button></li>
         </ul>     
       </div>
@@ -46,39 +46,54 @@
       
     </div>
 	
+	<?php
+		$getArticleDataStmt = $db->query("SELECT * FROM Article WHERE ArticleID = 1");
+		$ArticleData = $getArticleDataStmt->fetch(PDO::FETCH_ASSOC);
+		$ArticleID = $ArticleData['ArticleID'];
+		$ArticleText = $ArticleData['ArticleText'];
+		
+		$getArticleImageStmt = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $ArticleID limit 1 ");
+		$ArticleImage = $getArticleImageStmt->fetch(PDO::FETCH_ASSOC);
+	?>
 	
 	<!-- This is the center column -->
-    <div class="col-md-6">
-			<div style = "margin-top: 40px; margin-bottom: 40px;">
+    <div class="col-lg-8">
+			<div style = "margin-top: 4%; margin-bottom: 4%;">
 				<hr>
-					<center><h1>Latest Articles</h1></center>
+					<center><h1> 
+						<?php
+							echo $ArticleData["ArticleTitle"];
+						?>
+					</h1></center>
 				<hr>
 			</div>
 			
-			<!-- Start of Articles -->
+			<!-- Article body -->
+			<div class="row">
+				<div class="col-md">
+					<img src="<?php echo $ArticleImage['FileName'] ?>" id="ArticleImage">
+				</div>
+				<div class="col-md">
+					<p class="lead" style="font-size: 1.0rem; margin-left: 5%;"><?php 
+					
+						echo $ArticleText;
+					
+					?></p>
+				</div>
+			</div>
 			
-			<?php
-                $stmt1 = $db->query("SELECT * FROM article");
-                while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
-                    $test = $row1['ArticleID'];
-                    $stmt2 = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $test limit 1 ");
-                    $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-                    ?>
-                    <div class="card" style="width:100%; margin-bottom: 100px;">
-                        <img class="card-img-top" src="<?php echo $row2['FileName'] ?>" alt="File Image Missing" style="height:50%;width:100%;">
-                        <div class="card-body">
-                            <h4 class="card-title"><?php echo $row1['ArticleTitle']; ?></h4>
-                            <p class="card-text"><?php echo $row1['ArticleText']; ?></p>
-                            <a href="#" class="btn btn-primary">Read Article</a>
-                        </div>
-                    </div>
-                <?php } ?>
+			<hr>
 			
+			<!-- Footer -->
+			
+			<div class="alert alert-primary" role="alert">
+				To read the full article, download it <a href="#" class="alert-link">here</a>.
+			</div>
     </div>
 	
 	
 	<!-- This is the right column -->
-    <div class="col-md">
+    <div class="col-lg">
 		<div id="right_block">
 			
 		</div>

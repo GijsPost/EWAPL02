@@ -1,0 +1,24 @@
+.title-bar{
+	background-color: #4474c5;
+}
+.top-bar{
+	background-color: #4474c5 !important;
+}
+.top-bar li {
+	background-color: #4474c5 !important;
+}
+.top-bar ul {
+	background-color: #4474c5 !important;
+}
+.top-bar a{
+	color: #ffffff;
+}
+
+html, body { height: 100%; width: 100%; margin: 0; }
+
+#centre_block{
+	background-color: #f6ecec;	
+}
+#right_block{
+	background-color: #76D6F0;	
+}

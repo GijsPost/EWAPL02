@@ -21,6 +21,7 @@
   			$email = $emailErr = ""; 
   			$termsErr = "";
   			$error = "";
+  			$institution = "";
 
 
 
@@ -147,6 +148,18 @@
                     <span style="color:red"><?php echo $emailErr ?>
                 </div>
             </div>
+            <div class="form-group row">
+			  	<label for="sel1" class="col-sm-3 col-form-label">Institution</label>
+			  	<div class="col-sm-9	">
+			  		<select class="form-control" value="3">
+					    <option>Amsterdam University of the Arts</option>
+					    <option>Amsterdam University of Applied Sciences</option>
+					    <option selected>Gerrit Rietveld Academy</option>
+					    <option>University of Amsterdam</option>
+					    <option>Vrije Universiteit Amsterdam</option>
+			  		</select>
+			  	</div>
+			</div>
 
             <div class="form-group row">
                 <div class="col-sm-9	">

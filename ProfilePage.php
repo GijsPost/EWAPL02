@@ -13,8 +13,8 @@
   <body>
   
 		<?php 
-			include "DBConnection.php";
-			include "Navbar.php";
+			include "files/DBConnection.php";
+			include "files/Navbar.php";
 		?>
 
 	<div class="row">
@@ -53,8 +53,8 @@
 			
 				<h3 style="margin-left: 10%;">Bio</h3>
 				
-				<p style="margin-left: 10%;"><?php $myfile = fopen("loremipsum.txt", "r") or die("Unable to open file!");
-					echo fread($myfile,filesize("loremipsum.txt"));
+				<p style="margin-left: 10%;"><?php $myfile = fopen("files/loremipsum.txt", "r") or die("Unable to open file!");
+					echo fread($myfile,filesize("files/loremipsum.txt"));
 					fclose($myfile);?>
 				</p>
 			</div>

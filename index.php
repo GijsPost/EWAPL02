@@ -13,8 +13,8 @@
   <body>
   
 		<?php 
-			include "DBConnection.php";
-			include "Navbar.php";
+			include "files/DBConnection.php";
+			include "files/Navbar.php";
 		?>
 	
     	<div class="row">
@@ -26,7 +26,7 @@
 	
 	
 	<!-- This is the center column -->
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-8">
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>
 					<center><h1>Latest Articles</h1></center>
@@ -42,12 +42,12 @@
                     $stmt2 = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $test limit 1 ");
                     $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
                     ?>
-                    <div class="card" style="width:100%; margin-bottom: 100px;">
-                        <img class="card-img-top" src="<?php echo $row2['FileName'] ?>" alt="File Image Missing" style="height:50%;width:100%;">
+                    <div class="card" style="width:100%; margin-bottom: 100px; overflow: hidden;">
+                        <img class="card-img-top" src="images/<?php echo $row2['FileName'] ?>" alt="File Image Missing" style="height:30%;width:100%;">
                         <div class="card-body">
                             <h4 class="card-title"><?php echo $row1['ArticleTitle']; ?></h4>
                             <p class="card-text"><?php echo $row1['ArticleText']; ?></p>
-                            <a href="#" class="btn btn-primary">Read Article</a>
+                            <a href="ArticlePage.php" class="btn btn-primary">Read Article</a>
                         </div>
                     </div>
                 <?php } ?>

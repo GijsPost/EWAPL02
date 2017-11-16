@@ -13,8 +13,8 @@
   <body>
   
 		<?php 
-			include "DBConnection.php";
-			include "Navbar.php";
+			include "files/DBConnection.php";
+			include "files/Navbar.php";
 		?>  
 
 	<div class="row">
@@ -35,7 +35,7 @@
 	?>
 	
 	<!-- This is the center column -->
-    <div class="col-lg-8">
+    <div class="col-lg-8 col-md-10">
 			<div style = "margin-top: 4%; margin-bottom: 4%;">
 				<hr>
 					<center><h1> 
@@ -62,16 +62,46 @@
 			
 			<hr>
 			
-			<!-- Footer -->
+			<!-- Midden download balk -->
 			
 			<div class="alert alert-primary" role="alert">
 				To read the full article, download it <a href="#" class="alert-link">here</a>.
+			</div>
+			
+			<hr>
+			
+			<!-- Comment section -->
+			
+			<h3>Comments</h3>
+			<h6>Sort by</h6>
+			<ul class="nav nav-tabs" style="margin-bottom: 2%;">
+			  <li class="nav-item">
+				<a class="nav-link active" href="#">Most recent</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#">Oldest</a>
+			  </li>
+			</ul>
+			
+			<div class="card" style="margin-bottom: 5%;">
+			  <div class="card-header">
+				<img src="images/pfp.jpg" style="width:50px;height:50px; margin-right: 15px;">
+				<b>Username</b>
+			  </div>
+			  <div class="card-body">
+				<p class="card-text"><?php
+					$myfile = fopen("files/loremipsum_small.txt", "r") or die("Unable to open file!");
+					echo fread($myfile,filesize("files/loremipsum_small.txt"));
+					fclose($myfile);
+					?>
+				</p>
+			  </div>
 			</div>
     </div>
 	
 	
 	<!-- This is the right column -->
-    <div class="col-lg">
+    <div class="col-md">
 		<div id="right_block">
 			
 		</div>

@@ -13,8 +13,8 @@
   <body>
     
   		<?php
-  			include "DBConnection.php";
-			include "Navbar.php";
+  			include "files/DBConnection.php";
+			include "files/Navbar.php";
   			$username = $usernameErr = "";
   			$password = $passwordErr = "";
   			$confirmPassword = $confirmPasswordErr = "";

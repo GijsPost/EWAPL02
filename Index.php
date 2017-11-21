@@ -39,6 +39,9 @@
                 $stmt1 = $db->query("SELECT * FROM article");
                 while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
                     $test = $row1['ArticleID'];
+					
+					$linkToArticlePage = "ArticlePage.php?link= $test";
+					
                     $stmt2 = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $test limit 1 ");
                     $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
                     ?>
@@ -47,7 +50,7 @@
                         <div class="card-body">
                             <h4 class="card-title"><?php echo $row1['ArticleTitle']; ?></h4>
                             <p class="card-text"><?php echo $row1['ArticleText']; ?></p>
-                            <a href="ArticlePage.php" class="btn btn-primary">Read Article</a>
+                            <a href="<?php echo $linkToArticlePage; ?>" class="btn btn-primary">Read Article</a>
                         </div>
                     </div>
                 <?php } ?>

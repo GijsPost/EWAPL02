@@ -24,13 +24,18 @@
     </div>
 	
 	<?php
-		$getArticleDataStmt = $db->query("SELECT * FROM Article WHERE ArticleID = 1");
+		$link = $_GET['link'];
+	
+		$getArticleDataStmt = $db->query("SELECT * FROM Article WHERE ArticleID = $link");
 		$ArticleData = $getArticleDataStmt->fetch(PDO::FETCH_ASSOC);
 		$ArticleID = $ArticleData['ArticleID'];
 		$ArticleText = $ArticleData['ArticleText'];
 		
 		$getArticleImageStmt = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $ArticleID limit 1 ");
 		$ArticleImage = $getArticleImageStmt->fetch(PDO::FETCH_ASSOC);
+		
+		$getArticlePublisherStmt = $db->query("select * from user s left join user_article ua ON ua.Users_UserID = s.UserID left join article a ON ua.Articles_ArticleID = a.ArticleID where a.ArticleID = $ArticleID");
+		$ArticlePublisher = $getArticlePublisherStmt->fetch(PDO::FETCH_ASSOC);
 	?>
 	
 	<!-- This is the center column -->
@@ -48,7 +53,7 @@
 			<!-- Article body -->
 			<div class="row">
 				<div class="col-md">
-					<img src="<?php echo $ArticleImage['FileName'] ?>" id="ArticleImage">
+					<img src="images/<?php echo $ArticleImage['FileName'] ?>" id="ArticleImage">
 				</div>
 				<div class="col-md">
 					<p class="lead" style="font-size: 1.0rem; margin-left: 5%;"><?php 
@@ -64,6 +69,36 @@
 			<!-- Midden download balk -->
 			
 			<div class="alert alert-primary" role="alert">
+				
+				This Article was submitted by <br><br>
+				
+				<div class="row">
+				<div class="col-fixed-100">
+					<img src="images/<?php 
+					
+						if($ArticlePublisher['UserProfilePicture'] == null){
+								echo "PROFILE_PICTURE_TEMPLATE";
+						} else{
+							echo $ArticlePublisher['UserProfilePicture'];
+						}	
+					
+					?>" style="width:60px;height:60px;margin-left:20%;">
+				</div>
+				<div class="col">
+					<h5 style="margin-left:10px;"><?php echo $ArticlePublisher['UserName']; 
+
+						if($ArticlePublisher['UserType'] == 'publisher'){
+							?><span class="badge badge-success" style="margin-left: 2%;">Publisher</span><?php
+						}
+						if($ArticlePublisher['UserType'] == 'admin'){
+							?><span class="badge badge-danger" style="margin-left: 2%;">Administrator</span><?php
+						}
+					?></h5>
+					<p style="margin-left:10px;"><?php echo $ArticlePublisher['UserInstitution']?></p>
+				</div>
+				</div>
+				<button type="button" class="btn btn-primary">Go to profile</button>
+				<br><br>
 				To read the full article, download it <a href="#" class="alert-link">here</a>.
 			</div>
 			
@@ -84,7 +119,7 @@
 			
 			<div class="card" style="margin-bottom: 5%;">
 			  <div class="card-header">
-				<img src="images/pfp.jpg" style="width:50px;height:50px; margin-right: 15px;">
+				<img src="images/PROFILE_PICTURE_TEMPLATE.jpg" style="width:50px;height:50px; margin-right: 15px;">
 				<b>Username</b>
 			  </div>
 			  <div class="card-body">

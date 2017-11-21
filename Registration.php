@@ -84,11 +84,11 @@
 	            $institution = $_POST["institutionInput"];
 
 	            if(empty($usernameErr) && empty($passwordErr) && empty($confirmPasswordErr) && empty($emailErr) && isset($_POST['terms'])){
-	            
+	            	$hashedww = password_hash($ww, PASSWORD_DEFAULT); 
 	            	$stmt = $db->prepare('INSERT INTO user (UserName, UserPassword, UserEmail, UserType, UserInstitution) 
 	                VALUES (?,?,?,?,?)');
 	                $stmt->bindValue(1, $username, PDO::PARAM_STR);
-	                $stmt->bindValue(2, $password, PDO::PARAM_STR);
+	                $stmt->bindValue(2, $hashedww, PDO::PARAM_STR);
 	                $stmt->bindValue(3, $email, PDO::PARAM_STR);
 	                $stmt->bindValue(4, 'user', PDO::PARAM_STR);
 	                $stmt->bindValue(5, $institution);
@@ -96,8 +96,20 @@
 	                $stmt1 = $db->query("select UserID from user where UserEmail = '$email' ");
 	            	$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 	            	
-
-	            	header("Location: AdditionalInfo.php?link=".$row1['UserID']."");
+	            	$stmt = $db->prepare("SELECT * FROM user WHERE UserID = ?");
+	            	$stmt->bindValue(1, $row1['UserID']);
+		            $stmt->execute();
+		            $result = $stmt->fetch(PDO::FETCH_NUM);
+		            $_SESSION["UserID"] = $result[0];
+		            $_SESSION["UserName"] = $result[1];
+		            $_SESSION["UserPassword"] = $result[2];
+		            $_SESSION["UserEmail"] = $result[3];
+		            $_SESSION["UserProfilePicture"] = $result[4];
+		            $_SESSION["UserDateCreated"] = $result[5];
+		            $_SESSION["UserType"] = $result[6];
+		            $_SESSION["UserInstitution"] = $result[7];
+		            $_SESSION["UserBio"] = $result[8];
+	            	header("Location: AdditionalInfo.php");
                	 	exit();
 	            }else{
 	            	$error = "Something went wrong try again";

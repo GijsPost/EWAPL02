@@ -20,7 +20,7 @@
 	
 	<!-- This is the left column -->
     <div class="col-md">
-      
+
     </div>
 	
 	<?php
@@ -52,10 +52,10 @@
 			
 			<!-- Article body -->
 			<div class="row">
-				<div class="col-md">
+				<div class="col-md-4">
 					<img src="images/<?php echo $ArticleImage['FileName'] ?>" id="ArticleImage">
 				</div>
-				<div class="col-md">
+				<div class="col-md-8">
 					<p class="lead" style="font-size: 1.0rem; margin-left: 5%;"><?php 
 					
 						echo $ArticleText;
@@ -70,7 +70,7 @@
 			
 			<div class="alert alert-primary" role="alert">
 				
-				This Article was submitted by <br><br>
+				<h4>Publisher</h4>
 				
 				<div class="row">
 				<div class="col-fixed-100">
@@ -98,8 +98,7 @@
 				</div>
 				</div>
 				<button type="button" class="btn btn-primary">Go to profile</button>
-				<br><br>
-				To read the full article, download it <a href="#" class="alert-link">here</a>.
+				<button type="button" class="btn btn-secondary">Download Article</button>
 			</div>
 			
 			<hr>

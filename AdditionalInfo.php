@@ -6,15 +6,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-	<link rel="stylesheet" href="css/testing.css">
+    
   </head>
   <body>
   
 		<?php 
 			include "files/DBConnection.php";
 			include "files/Navbar.php";
+            include 'files/Css.php';
 		?>
 
 	<div class="row">
@@ -29,28 +28,64 @@
     <div class="col-md-6">
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>
-					<center><h1>Latest Articles</h1></center>
+					<center><h1>Add some personal information</h1></center>
 				<hr>
 			</div>
 			
-			<!-- Start of Articles -->
+		
 			
 			<?php
-                $stmt1 = $db->query("SELECT * FROM article");
-                while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
-                    $test = $row1['ArticleID'];
-                    $stmt2 = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $test limit 1 ");
-                    $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-                    ?>
-                    <div class="card" style="width:100%; margin-bottom: 100px;">
-                        <img class="card-img-top" src="<?php echo $row2['FileName'] ?>" alt="File Image Missing" style="height:50%;width:100%;">
-                        <div class="card-body">
-                            <h4 class="card-title"><?php echo $row1['ArticleTitle']; ?></h4>
-                            <p class="card-text"><?php echo $row1['ArticleText']; ?></p>
-                            <a href="#" class="btn btn-primary">Read Article</a>
-                        </div>
-                    </div>
-                <?php } ?>
+                $userID = $_GET['link'];
+                $bio = $imgLink = "";
+                $bioErr = $error = "";
+                
+
+                // Check if image file is a actual image or fake image
+                if($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $target_dir = "images/";
+                    $target_file = $target_dir . basename($_FILES["file"]["name"]);
+                    $uploadOk = 1;
+                    $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+
+                    $check = getimagesize($_FILES["file"]["tmp_name"]);
+                    if($check !== false) {
+                        echo "File is an image - " . $check["mime"] . ".";
+                        $uploadOk = 1;
+                    } else {
+                        echo "File is not an image.";
+                        $uploadOk = 0;
+                    }
+                    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+                    }
+                }
+
+
+                
+            ?>
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
+                <div class="form-group row">
+                    
+                        <label class="col-form-label">Write something about you (max 500 characters)</label>
+                    
+                        <textarea class="form-control" rows="5" name="inputBio" placeholder="Biography" value=<?php echo $bio?>></textarea>
+                       <span style="color:red"><?php echo $bioErr ?></span>
+                    
+                </div>
+                <div class="row">
+                <label class="col-form-label">Upload a profile picture</label>
+                </div>
+                <div class="form-group row">        
+                        <label class="custom-file">
+                            <input type="file" name="file" id="file">
+                        </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Add personal information</button>
+                <span style="color:red"><?php echo $error ?></span>
+
+
+
+            </form>
 			
     </div>
 	
@@ -64,10 +99,6 @@
 	
 	</div>
 	
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    
   </body>
 </html>

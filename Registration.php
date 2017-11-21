@@ -81,20 +81,23 @@
 	            	$emailErr = "Email already exists";
 	            }
 
+	            $institution = $_POST["institutionInput"];
+
 	            if(empty($usernameErr) && empty($passwordErr) && empty($confirmPasswordErr) && empty($emailErr) && isset($_POST['terms'])){
 	            
-	            	$stmt = $db->prepare('INSERT INTO user (UserName, UserPassword, UserEmail, UserType) 
-	                VALUES (?,?,?,?)');
+	            	$stmt = $db->prepare('INSERT INTO user (UserName, UserPassword, UserEmail, UserType, UserInstitution) 
+	                VALUES (?,?,?,?,?)');
 	                $stmt->bindValue(1, $username, PDO::PARAM_STR);
 	                $stmt->bindValue(2, $password, PDO::PARAM_STR);
 	                $stmt->bindValue(3, $email, PDO::PARAM_STR);
 	                $stmt->bindValue(4, 'user', PDO::PARAM_STR);
+	                $stmt->bindValue(5, $institution);
 	                $stmt->execute();
 	                $stmt1 = $db->query("select UserID from user where UserEmail = '$email' ");
 	            	$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-	            	echo $row1['UserID'];
+	            	
 
-	            	header("Location: additionalInfo.php?link=".$row1['UserID']."");
+	            	header("Location: AdditionalInfo.php?link=".$row1['UserID']."");
                	 	exit();
 	            }else{
 	            	$error = "Something went wrong try again";
@@ -124,39 +127,43 @@
                 <label for="inputUsername" class="col-sm-3 col-form-label">Username</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" name="inputUsername" placeholder="Username" value=<?php echo $username?>>
-                   <span style="color:red"><?php echo $usernameErr ?>
+                   <span style="color:red"><?php echo $usernameErr ?></span>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
                 <div class="col-sm-9">
                     <input type="password" class="form-control" name="inputPassword" placeholder="Password" value=<?php echo $password?>>
-                    <span style="color:red"><?php echo $passwordErr ?>
+                    <span style="color:red"><?php echo $passwordErr ?></span>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputConfirmPassword" class="col-sm-3 col-form-label">Confirm password</label>
                 <div class="col-sm-9">
                     <input type="password" class="form-control" name="inputConfirmPassword" placeholder="Confirm password" value=<?php echo $confirmPassword?>>
-                    <span style="color:red"><?php echo $confirmPasswordErr ?>
+                    <span style="color:red"><?php echo $confirmPasswordErr ?></span>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputEmail" class="col-sm-3 col-form-label">Email</label>
                 <div class="col-sm-9	">
                     <input type="text" class="form-control" name="inputEmail" placeholder="Email" value=<?php echo $email?>>
-                    <span style="color:red"><?php echo $emailErr ?>
+                    <span style="color:red"><?php echo $emailErr ?></span>
                 </div>
             </div>
             <div class="form-group row">
 			  	<label for="sel1" class="col-sm-3 col-form-label">Institution</label>
 			  	<div class="col-sm-9	">
-			  		<select class="form-control" value="3">
-					    <option>Amsterdam University of the Arts</option>
-					    <option>Amsterdam University of Applied Sciences</option>
-					    <option selected>Gerrit Rietveld Academy</option>
-					    <option>University of Amsterdam</option>
-					    <option>Vrije Universiteit Amsterdam</option>
+			  		<select class="form-control" name="institutionInput">
+					    <option value="Amsterdam University of the Arts" <?php if($institution=="Amsterdam University of the Arts") echo 'selected="selected"'; ?> >Amsterdam University of the Arts</option>
+
+						<option value="Amsterdam University of Applied Sciences" <?php if($institution=="Amsterdam University of Applied Sciences") echo 'selected="selected"'; ?> >Amsterdam University of Applied Sciences</option>
+
+						<option value="Gerrit Rietveld Academy" <?php if($institution=="Gerrit Rietveld Academy") echo 'selected="selected"'; ?> >Gerrit Rietveld Academy</option>
+
+						<option value="University of Amsterdam" <?php if($institution=="University of Amsterdam") echo 'selected="selected"'; ?> >University of Amsterdam</option>
+
+						<option value="Vrije Universiteit Amsterdam" <?php if($institution=="Vrije Universiteit Amsterdam") echo 'selected="selected"'; ?> >Vrije Universiteit Amsterdam</option>
 			  		</select>
 			  	</div>
 			</div>
@@ -167,11 +174,11 @@
                     <span>
                         I accept the Terms of Service.</a>
                     </span>
-                    <span style="color:red"><?php echo $termsErr ?>
+                    <span style="color:red"><?php echo $termsErr ?></span>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Create account</button>
-            <span style="color:red"><?php echo $error ?>
+            <span style="color:red"><?php echo $error ?></span>
         </form>	
     </div>
 	
@@ -179,7 +186,6 @@
 	<!-- This is the right column -->
     <div class="col-md">
 		<div id="right_block">
-			
 		</div>
     </div>
 	

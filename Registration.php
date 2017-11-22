@@ -189,7 +189,7 @@
                     <span style="color:red"><?php echo $termsErr ?></span>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Create account</button>
+            <button type="submit" class="btn btn-primary" style="float: right">Create account</button>
             <span style="color:red"><?php echo $error ?></span>
         </form>	
     </div>

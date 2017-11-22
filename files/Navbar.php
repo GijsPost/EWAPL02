@@ -19,15 +19,27 @@ session_start();
         <a class="nav-link" href="index.php">Latest Articles</a>
       </li>
       <li class="nav-item dropdown active">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Account
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="ProfilePage.php">Your profile</a>
-          <a class="dropdown-item" href="ProfilePage.php">Your Articles</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="Registration.php">Log in</a>
-        </div>
+        <?php  
+          if(isset($_SESSION['UserID'])){
+            ?>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <?php echo $_SESSION['UserName']?>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="ProfilePage.php">Your profile</a>
+              <a class="dropdown-item" href="ProfilePage.php">Your Articles</a>
+              <a class="dropdown-item" href="LogOut.php">Log out</a>
+            </div>
+            <?php
+          }else{
+            ?><li class="nav-item active">
+                <a class="nav-link" href="LogIn.php">Log in</a>
+              </li>
+          <?php
+          }
+          ?>
+       
+        
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">

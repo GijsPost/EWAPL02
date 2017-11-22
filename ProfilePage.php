@@ -24,7 +24,8 @@
     </div>
 	
 	<?php
-		$getUserDataStmt = $db->query("SELECT * FROM User WHERE UserID = 1");
+		$userid = $_SESSION['UserID'];
+		$getUserDataStmt = $db->query("SELECT * FROM User WHERE UserID = $userid");
 		
 		$UserData = $getUserDataStmt->fetch(PDO::FETCH_ASSOC);
 		
@@ -59,7 +60,7 @@
 			</div>
 
 			<div class="col-md">
-				<center><img src="images/<?php echo $UserProfilePicture;?>.jpg" style="width: 70%; height: 100%;"></center>
+				<center><img src="images/<?php echo $UserProfilePicture;?>" style="width: 70%; height: 100%;"></center>
 			</div>
 			
 			</div>

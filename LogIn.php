@@ -40,8 +40,7 @@
           $result = $stmt->fetch(PDO::FETCH_NUM);
           if($result){
             $passwordDB = $result[2];
-            $hashedww = password_hash($password, PASSWORD_DEFAULT);
-            if(password_verify($passwordDB, $hashedww) == 0){
+            if(password_verify($password, $passwordDB) == true){
               $_SESSION["UserID"] = $result[0];
               $_SESSION["UserName"] = $result[1];
               $_SESSION["UserPassword"] = $result[2];

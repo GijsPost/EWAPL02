@@ -19,6 +19,8 @@
 			$ArticleTitle = $ArticleTitleError = "";
 			$ArticleSummary = $SummaryError = "";
 			$error = "";
+			$imgError = "";
+			$ArticlePrefix = "A";
 			
 			if ($_SERVER["REQUEST_METHOD"] == "POST") {
   				$error = "";
@@ -60,14 +62,70 @@
 					$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					$PresumedID = ($row2['ArticleID']);
 						            	
+							
+					$uploadOk = 1;
+                        $target_dir = "images/";
+                        $target_file = $target_dir . basename($_FILES["imageToUpload"]["name"]);
+                        
+                        $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+
+
+                        // Check if image file is a actual image or fake image
+                        
+                        $check = empty($_FILES["imageToUpload"]["tmp_name"]);
+                        if($check != 1 && $uploadOk!= 0) {
+                            // Check if file already exists
+                            if (file_exists($ArticlePrefix.$PresumedID.".".$imageFileType)) {
+                                $imgError = "Sorry, file already exists.";
+                                $uploadOk = 0;
+                            }
+                            // Check file size
+                            if ($_FILES["imageToUpload"]["size"] > 500000) {
+                                $imgError = "Sorry, your file is too large.";
+                                $uploadOk = 0;
+                            }
+                            // Allow certain file formats
+                            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                                $imgError = "Sorry, only JPG, JPEG & PNG files are allowed.";
+                                $uploadOk = 0;
+                            }
+
+                            $bio = $_POST['inputBio'];
+                            if(strlen($bio) > 500) {
+                                $uploadOk = 0;
+                                $bioErr = "Too long";
+                            } 
+                            // Check if $uploadOk is set to 0 by an error
+                            if ($uploadOk == 1) { 
+                                $target_file = $ArticlePrefix.$PresumedID.".".$imageFileType;
+                                if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], "images/{$target_file}")) {
+                                    $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
+                                    $stmt1->bindValue(1, $target_file);
+                                    $stmt1->execute(); 
+									
+									$stmt1 = $db->prepare("INSERT INTO article_file (Articles_ArticleID, File_FileID) VALUES(?,(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1));");
+                                    $stmt1->bindValue(1, $PresumedID);
+                                    $stmt1->execute(); 
+                                    while (ob_get_status()) 
+                                    {
+                                        ob_end_clean();
+                                    }
+                                } else {
+                                    $imgError = "Sorry, there was an error uploading your file.";
+                                }
+                            }
+                        } else {
+                            $imgError = "File is not an image.";
+                            $uploadOk = 0;
+                        }
+                    }else{
+                        echo "gelukt";
+                    }
 
 	            	header("Location: ArticlePage.php?link=".$PresumedID."");
                	 	exit();
-	            }else{
-	            	$error = "Something went wrong try again";
-	            }
-
-			}
+	            }           
+			
 		?>
 	
     	<div class="row">
@@ -86,7 +144,7 @@
 				<hr>
 			</div>
 			
-		<form method="post" action="">
+		<form method="post" action="" enctype="multipart/form-data">
             <div class="form-group row">
                 <label for="inputArticleTitle" class="col-sm-3 col-form-label">Article title</label>
                 <div class="col-sm-9">
@@ -96,9 +154,10 @@
             </div>
 			<div class="form-group row">
 				<label for="inputImage" class="col-sm-3 col-form-label">Upload image</label>
-                <label class="btn btn-secondary" style="margin-left:15px;">
-					Browse <input type="file" hidden accept="image/png,image/jpg,image/bmp">
-				</label>
+				<label class="custom-file">
+                            <input type="file" name="imageToUpload" id="imageToUpload">
+                        </label>
+                        <span style="color:red"><?php echo $imgError ?></span>
             </div>
             <div class="form-group row">
                 <label for="inputSummary" class="col-sm-3 col-form-label">Summary</label>

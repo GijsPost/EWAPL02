@@ -16,6 +16,16 @@
 			include "files/DBConnection.php";
 			include "files/Navbar.php";
 			
+			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "publisher"){
+			?>
+			<div style = "margin-top: 40px; margin-bottom: 40px;">
+				<hr>
+					<center><h1>Please log in to post an article</h1></center>
+				<hr>
+			</div>
+			<?php } else{
+			
+			
 			$ArticleTitle = $ArticleTitleError = "";
 			$ArticleSummary = $SummaryError = "";
 			$error = "";
@@ -64,10 +74,13 @@
 						            	
 							
 					$uploadOk = 1;
-                        $target_dir = "images/articleImages";
-                        $target_file = $target_dir . basename($_FILES["imageToUpload"]["name"]);
+                    $target_dir_images = "images/articleImages";
+					$target_dir_articles = "articles/";
+                    $target_file_image = $target_dir_images . basename($_FILES["imageToUpload"]["name"]);
+					$target_file_article = $target_dir_articles . basename($_FILES["fileToUpload"]["name"]);
                         
-                        $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+                    $imageFileType = pathinfo($target_file_image,PATHINFO_EXTENSION);
+					$articleFileType = pathinfo($target_file_article,PATHINFO_EXTENSION);
 
 
                         // Check if image file is a actual image or fake image
@@ -89,18 +102,41 @@
                                 $imgError = "Sorry, only JPG, JPEG & PNG files are allowed.";
                                 $uploadOk = 0;
                             }
+							
+							// Check if article file is a actual pdf or fake
+                        
+                        $check = empty($_FILES["fileToUpload"]["tmp_name"]);
+                        if($check != 1 && $uploadOk!= 0) {
+                            // Check if file already exists
+                            if (file_exists($ArticlePrefix.$PresumedID.".".$articleFileType)) {
+                                $imgError = "Sorry, file already exists.";
+                                $uploadOk = 0;
+                            }
+                            // Check file size
+                            if ($_FILES["fileToUpload"]["size"] > 500000) {
+                                $imgError = "Sorry, your file is too large.";
+                                $uploadOk = 0;
+                            }
+                            // Allow certain file formats
+                            if($articleFileType != "pdf") {
+                                $imgError = "Sorry, only PDF files are allowed.";
+                                $uploadOk = 0;
+                            }
 
                             $bio = $_POST['inputBio'];
                             if(strlen($bio) > 500) {
                                 $uploadOk = 0;
                                 $bioErr = "Too long";
                             } 
+							
                             // Check if $uploadOk is set to 0 by an error
                             if ($uploadOk == 1) { 
-                                $target_file = $ArticlePrefix.$PresumedID.".".$imageFileType;
-                                if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], "images/articleImages/{$target_file}")) {
+                                $target_file_image = $ArticlePrefix.$PresumedID.".".$imageFileType;
+								$target_file_article = $ArticlePrefix.$PresumedID.".".$articleFileType;
+								
+                                if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], "images/articleImages/{$target_file_image}")) {
                                     $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
-                                    $stmt1->bindValue(1, $target_file);
+                                    $stmt1->bindValue(1, $target_file_image);
                                     $stmt1->execute(); 
 									
 									$stmt1 = $db->prepare("INSERT INTO article_file (Articles_ArticleID, File_FileID) VALUES(?,(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1));");
@@ -111,7 +147,23 @@
                                         ob_end_clean();
                                     }
                                 } else {
-                                    $imgError = "Sorry, there was an error uploading your file.";
+                                    $imgError = "Sorry, there was an error uploading your image.";
+                                }
+								
+								if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "articles/{$target_file_article}")) {
+                                    $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
+                                    $stmt1->bindValue(1, $target_file_article);
+                                    $stmt1->execute(); 
+									
+									$stmt1 = $db->prepare("INSERT INTO article_file (Articles_ArticleID, File_FileID) VALUES(?,(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1));");
+                                    $stmt1->bindValue(1, $PresumedID);
+                                    $stmt1->execute(); 
+                                    while (ob_get_status()) 
+                                    {
+                                        ob_end_clean();
+                                    }
+                                } else {
+                                    $imgError = "Sorry, there was an error uploading your pdf file.";
                                 }
                             }
                         } else {
@@ -122,9 +174,10 @@
                         echo "gelukt";
                     }
 
-	            	header("Location: ArticlePage.php?link=".$PresumedID."");
+	            	//header("Location: ArticlePage.php?link=".$PresumedID."");
                	 	exit();
 	            }           
+			}
 			
 		?>
 	
@@ -155,9 +208,9 @@
 			<div class="form-group row">
 				<label for="inputImage" class="col-sm-3 col-form-label">Upload image</label>
 				<label class="custom-file">
-                            <input type="file" name="imageToUpload" id="imageToUpload">
-                        </label>
-                        <span style="color:red"><?php echo $imgError ?></span>
+                    <input type="file" name="imageToUpload" id="imageToUpload" style="margin-left:5%;">
+                </label>
+                <span style="color:red"><?php echo $imgError ?></span>
             </div>
             <div class="form-group row">
                 <label for="inputSummary" class="col-sm-3 col-form-label">Summary</label>
@@ -168,10 +221,18 @@
             </div>
             <div class="form-group row">
 				<label for="inputFile" class="col-sm-3 col-form-label" >Upload (pdf)</label>
-                <label class="btn btn-secondary" style="margin-left:15px;">
-					Browse <input type="file" hidden accept="application/pdf,application/msword">
-				</label>
+                <label class="custom-file">
+                    <input type="file" name="fileToUpload" id="fileToUpload" style="margin-left:5%;">
+                </label>
             </div>
+			<div class="form-group row">
+			  	<label for="sel1" class="col-sm-3 col-form-label">Category</label>
+			  	<div class="col-sm-9	">
+			  		<select class="form-control" name="categoryInput">
+					    
+			  		</select>
+			  	</div>
+			</div>
             <button type="submit" class="btn btn-primary">Upload Article</button>
 			<span style="color:red"><?php echo $error ?></span>
         </form>
@@ -187,7 +248,7 @@
 			
 		</div>
     </div>
-	
+	<?php } ?>
 	</div>
 	
     <!-- Optional JavaScript -->

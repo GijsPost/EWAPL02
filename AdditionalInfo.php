@@ -76,6 +76,31 @@
                                 $uploadOk = 0;
                                 $bioErr = "Too long";
                             } 
+
+                            
+                            list($width_orig, $height_orig) = getimagesize($target_file);
+                            $ratio_orig = $width_orig/$height_orig;
+                            $minSize = 500;
+                            $aspectRatio = $width_orig / $height_orig;
+
+                            if ($width_orig < $height_orig) {
+                                if ($width_orig < $minSize) {
+                                    $width = $minSize;
+                                    $height = $width / $aspectRatio;
+                                }
+                            } else {
+                                if ($height_orig < $minSize) {
+                                    $height = $minSize;
+                                    $width = $height * $aspectRatio;
+                                }
+                            }
+                            $image_p = imagecreatetruecolor($width, $height);
+                            $image = $create($filename);
+                            imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+                            imagejpeg($image_p, null, 100);
+
+
+
                             // Check if $uploadOk is set to 0 by an error
                             if ($uploadOk == 1) { 
                                 $target_file = $UserPrefix.$_SESSION['UserID'].".".$imageFileType;
@@ -85,6 +110,7 @@
                                     $stmt1->bindValue(2, $bio);
                                     $stmt1->bindValue(3, $_SESSION['UserID']);
                                     $stmt1->execute(); 
+                                    $_SESSION['UserBio'] = $bio;
                                     while (ob_get_status()) 
                                     {
                                         ob_end_clean();
@@ -100,8 +126,9 @@
                             $uploadOk = 0;
                         }
                     }else{
-                        echo "gelukt";
+                        header("Location: index.php");
                     }
+
                     
                 }
 
@@ -111,7 +138,7 @@
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
                 <div class="form-group row">
                     
-                        <label class="col-form-label">Write something about you (max 500 characters)</label>
+                        <label class="col-form-label">Write something about yourself (max 500 characters)</label>
                     
                         <textarea class="form-control" rows="5" name="inputBio" placeholder="Biography" value=<?php echo $bio?>></textarea>
                        <span style="color:red"><?php echo $bioErr ?></span>

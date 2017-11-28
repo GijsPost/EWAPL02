@@ -37,7 +37,7 @@
 	                }
 	            }
 	            $password = strip_tags($_POST["inputPassword"]);
-	            if(empty($_POST["inputUsername"])){
+	            if(empty($_POST["inputPassword"])){
 	            	$passwordErr = "Password can not be empty";
 	            } else{
 	            	$password =  strip_tags($_POST["inputPassword"]);

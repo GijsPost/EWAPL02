@@ -13,7 +13,7 @@ session_start();
         <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="index.php">Categories</a>
+        <a class="nav-link" href="Categories.php">Categories</a>
       </li>
 	  <li class="nav-item active">
         <a class="nav-link" href="index.php">Latest Articles</a>

@@ -88,6 +88,7 @@
                 $stmt->execute();
 
             } catch (Exception $e) {
+              echo $echo;
               $message = "If the username and email are correct an email has been sent";
               $done = true;
             }

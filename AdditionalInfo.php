@@ -38,14 +38,15 @@
 			
 			<?php
                 ob_start();
+                $UserPrefix = "U";
                 $bio = $imgLink = "";
                 $bioErr = $error = $imgError = "";
                 if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     if(isset($_POST["addPersonalInfo"])) {
                         $uploadOk = 1;
-                        $target_dir = "images/";
-                        $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+                        $target_dir = "images/userProfilePicture/";
+                        $target_file = $UserPrefix.$target_dir.basename($_FILES["fileToUpload"]["name"]);
                         
                         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 
@@ -55,7 +56,7 @@
                         $check = empty($_FILES["fileToUpload"]["tmp_name"]);
                         if($check != 1 && $uploadOk!= 0) {
                             // Check if file already exists
-                            if (file_exists($_SESSION['UserID'].".".$imageFileType)) {
+                            if (file_exists($UserPrefix.$_SESSION['UserID'].".".$imageFileType)) {
                                 $imgError = "Sorry, file already exists.";
                                 $uploadOk = 0;
                             }
@@ -77,10 +78,10 @@
                             } 
                             // Check if $uploadOk is set to 0 by an error
                             if ($uploadOk == 1) { 
-                                $target_file = $_SESSION['UserID'].".".$imageFileType;
-                                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "images/{$target_file}")) {
+                                $target_file = $UserPrefix.$_SESSION['UserID'].".".$imageFileType;
+                                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "images/userProfilePicture/{$target_file}")) {
                                     $stmt1 = $db->prepare("UPDATE user SET UserProfilePicture = ?, UserBio = ? WHERE UserID = ?");
-                                    $stmt1->bindValue(1, $_SESSION['UserID'].".".$imageFileType);
+                                    $stmt1->bindValue(1, $UserPrefix.$_SESSION['UserID'].".".$imageFileType);
                                     $stmt1->bindValue(2, $bio);
                                     $stmt1->bindValue(3, $_SESSION['UserID']);
                                     $stmt1->execute(); 

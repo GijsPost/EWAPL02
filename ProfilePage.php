@@ -26,18 +26,26 @@
 	<?php
 		$userid = $_SESSION['UserID'];
 		$getUserDataStmt = $db->query("SELECT * FROM User WHERE UserID = $userid");
-		
 		$UserData = $getUserDataStmt->fetch(PDO::FETCH_ASSOC);
 		
-		if(is_null($UserData['UserProfilePicture']))
+		if(is_null($UserData['UserBio'])){
+			$UserBio = 'This person has no personal information';
+		}else{
+			$UserBio = $UserData['UserBio'];
+		}
+
+		if(is_null($UserData['UserProfilePicture'])){ 
 			$UserProfilePicture = "PROFILE_PICTURE_TEMPLATE";
-		else
+		}
+		else{
 			$UserProfilePicture = $UserData['UserProfilePicture'];
+		}
 	?>
 	
 	<!-- This is the center column -->
     <div class="col-lg-6">
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
+				
 				<hr>
 					<center><h1> 
 						<?php
@@ -51,17 +59,23 @@
 			
 			<div class="col-md">
 			
+			<h3 style="margin-left: 10%;">Institution</h3>
+				
+				<p style="margin-left: 10%;"><?php echo $_SESSION['UserInstitution'] ?>
+				</p>
+
 				<h3 style="margin-left: 10%;">Bio</h3>
 				
-				<p style="margin-left: 10%;"><?php $myfile = fopen("files/loremipsum.txt", "r") or die("Unable to open file!");
-					echo fread($myfile,filesize("files/loremipsum.txt"));
-					fclose($myfile);?>
+				<p style="margin-left: 10%;"><?php echo $UserBio ?>
 				</p>
 			</div>
 
 			<div class="col-md">
-				<center><img src="images/<?php echo $UserProfilePicture;?>" style="width: 70%; height: 100%;"></center>
+				<center><img src="images/UserProfilePicture/<?php echo $UserProfilePicture;?>" style="width: 70%; height: 100%;"></center>
+				<button type="reset" class="btn btn-primary" style="margin-top: 10px; margin-left:15%;" onclick="location.href='EditProfile.php'">Edit profile</button>
 			</div>
+
+
 			
 			</div>
     </div>

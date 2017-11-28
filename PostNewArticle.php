@@ -16,7 +16,7 @@
 			include "files/DBConnection.php";
 			include "files/Navbar.php";
 			
-			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "publisher"){
+			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "user"){
 			?>
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>
@@ -34,6 +34,7 @@
 			
 			if ($_SERVER["REQUEST_METHOD"] == "POST") {
   				$error = "";
+				
 				
   				$ArticleTitle = strip_tags($_POST["inputArticleTitle"]);
 	  			if (empty($_POST["inputArticleTitle"])) {
@@ -59,6 +60,7 @@
 	            if($row1['count(*)'] > 0){
 	            	$ArticleTitleError = "An article with this title already exists";
 				}
+				
 
 	            if(empty($ArticleTitleError) && empty($SummaryError)){
 	            
@@ -71,8 +73,19 @@
 					$stmt2 = $db->query("SELECT ArticleID FROM article ORDER BY ArticleID DESC LIMIT 0, 1;");
 					$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					$PresumedID = ($row2['ArticleID']);
-						            	
-							
+					
+	            	//Check for categories
+					$getCategoryStmt = $db->query("SELECT * FROM category");
+					while ($categories = $getCategoryStmt->fetch(PDO::FETCH_ASSOC)) {
+						$CategoryID = $categories['CategoryID'];
+						if(isset($_POST[$CategoryID])){
+							$insertStmt = $db->prepare("INSERT INTO article_category (ArticleID, CategoryID) VALUES (?,?);");
+							$insertStmt->bindValue(1, $PresumedID);
+							$insertStmt->bindValue(2, $categories['CategoryID']);
+							$insertStmt->execute();
+						}
+					}
+					
 					$uploadOk = 1;
                     $target_dir_images = "images/articleImages";
 					$target_dir_articles = "articles/";
@@ -122,12 +135,6 @@
                                 $imgError = "Sorry, only PDF files are allowed.";
                                 $uploadOk = 0;
                             }
-
-                            $bio = $_POST['inputBio'];
-                            if(strlen($bio) > 500) {
-                                $uploadOk = 0;
-                                $bioErr = "Too long";
-                            } 
 							
                             // Check if $uploadOk is set to 0 by an error
                             if ($uploadOk == 1) { 
@@ -174,7 +181,7 @@
                         echo "gelukt";
                     }
 
-	            	//header("Location: ArticlePage.php?link=".$PresumedID."");
+	            	header("Location: ArticlePage.php?link=".$PresumedID."");
                	 	exit();
 	            }           
 			}
@@ -226,11 +233,22 @@
                 </label>
             </div>
 			<div class="form-group row">
+				
 			  	<label for="sel1" class="col-sm-3 col-form-label">Category</label>
 			  	<div class="col-sm-9	">
-			  		<select class="form-control" name="categoryInput">
-					    
-			  		</select>
+					    <?php
+							$getCategoryStmt = $db->query("SELECT * FROM category");
+							while ($categories = $getCategoryStmt->fetch(PDO::FETCH_ASSOC)) {
+							$CategoryName = $categories['CategoryName'];
+						?>
+						
+							<label class="custom-control custom-checkbox">
+							  <input type="checkbox" class="custom-control-input" name="<?php echo $categories['CategoryID']?>">
+							  <span class="custom-control-indicator"></span>
+							  <span class="custom-control-description"><?php echo $CategoryName;?></span>
+							</label>
+						
+						<?php } ?>
 			  	</div>
 			</div>
             <button type="submit" class="btn btn-primary">Upload Article</button>

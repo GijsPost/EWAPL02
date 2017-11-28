@@ -35,7 +35,7 @@
 		}
 
 		if(is_null($UserData['UserProfilePicture'])){ 
-			$UserProfilePicture = "PROFILE_PICTURE_TEMPLATE";
+			$UserProfilePicture = "PROFILE_PICTURE_TEMPLATE.jpg";
 		}
 		else{
 			$UserProfilePicture = $UserData['UserProfilePicture'];
@@ -69,7 +69,6 @@
 				<p style="margin-left: 10%;"><?php echo $UserBio ?>
 				</p>
 			</div>
-
 			<div class="col-md">
 				<center><img src="images/UserProfilePicture/<?php echo $UserProfilePicture;?>" style="width: 70%; height: 100%;"></center>
 				<button type="reset" class="btn btn-primary" style="margin-top: 10px; margin-left:15%;" onclick="location.href='EditProfile.php'">Edit profile</button>

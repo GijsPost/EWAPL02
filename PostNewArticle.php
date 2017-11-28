@@ -64,7 +64,7 @@
 						            	
 							
 					$uploadOk = 1;
-                        $target_dir = "images/";
+                        $target_dir = "images/articleImages";
                         $target_file = $target_dir . basename($_FILES["imageToUpload"]["name"]);
                         
                         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -98,7 +98,7 @@
                             // Check if $uploadOk is set to 0 by an error
                             if ($uploadOk == 1) { 
                                 $target_file = $ArticlePrefix.$PresumedID.".".$imageFileType;
-                                if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], "images/{$target_file}")) {
+                                if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], "images/articleImages/{$target_file}")) {
                                     $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
                                     $stmt1->bindValue(1, $target_file);
                                     $stmt1->execute(); 

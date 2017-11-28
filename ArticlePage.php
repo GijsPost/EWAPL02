@@ -53,7 +53,7 @@
 			<!-- Article body -->
 			<div class="row">
 				<div class="col-md-4">
-					<img src="images/<?php echo $ArticleImage['FileName'] ?>" id="ArticleImage">
+					<img src="images/articleImages/<?php echo $ArticleImage['FileName'] ?>" id="ArticleImage">
 				</div>
 				<div class="col-md-8">
 					<p class="lead" style="font-size: 1.0rem; margin-left: 5%;"><?php 
@@ -74,7 +74,7 @@
 				
 				<div class="row">
 				<div class="col-fixed-100">
-					<img src="images/<?php 
+					<img src="images/userProfilePicture/<?php 
 					
 						if($ArticlePublisher['UserProfilePicture'] == null){
 								echo "PROFILE_PICTURE_TEMPLATE";

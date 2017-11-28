@@ -46,7 +46,7 @@
                     $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
                     ?>
                     <div class="card" style="width:100%; margin-bottom: 100px; overflow: hidden;">
-                        <img class="card-img-top" src="images/<?php echo $row2['FileName'] ?>" alt="File Image Missing" style="height:30%;width:100%;">
+                        <img class="card-img-top" src="images/articleImages/<?php echo $row2['FileName'] ?>" alt="File Image Missing" style="height:30%;width:100%;">
                         <div class="card-body">
                             <h4 class="card-title"><?php echo $row1['ArticleTitle']; ?></h4>
                             <p class="card-text"><?php echo $row1['ArticleText']; ?></p>

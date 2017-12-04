@@ -13,6 +13,7 @@
 		<?php 
             include "files/DBConnection.php";
 			include "files/Navbar.php";
+            include "files/Css.php";
         ?>
 	
     	<div class="row">

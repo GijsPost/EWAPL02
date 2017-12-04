@@ -1,7 +1,26 @@
 <?php
 session_start();
+include "files/Search.php";
 ?>
 
+<script>
+
+function showResult(str) {
+  if (str.length==0) { 
+    document.getElementById("result").innerHTML="";
+    
+    return;
+  }
+  xmlhttp=new XMLHttpRequest();
+  xmlhttp.onreadystatechange=function() {
+    if (this.readyState==4 && this.status==200) {
+      document.getElementById("result").innerHTML=this.responseText;
+    }
+  }
+  xmlhttp.open("GET","files/Search.php?key="+str,true);
+  xmlhttp.send();
+}
+</script>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="index.php">A.R.I.A.S. Publishing Lab</a>
@@ -44,9 +63,27 @@ session_start();
         
       </li>
     </ul>
+<form>
+<input type="text" size="30" onkeyup="showResult(this.value)" placeholder="Search" > 
+</form>
+
       
     </div>
 </nav>
 
-<input type="search" name="keyword" placeholder="Search">
-<div id="results"></div>
+
+
+
+<div class="row">
+  
+  <!-- This is the left column -->
+    <div class="col-md"></div>
+
+  <!-- This is the center column -->
+    <div class="col-lg-6 col-md-8">
+      <div id="result"></div>
+    </div>
+
+  <!-- This is the right column -->
+    <div class="col-md"></div>  
+</div>

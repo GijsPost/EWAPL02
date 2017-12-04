@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Sign up</title>
+    <title>Empty</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,7 +16,7 @@
       include "files/Css.php";
     ?>
 
-    <div class="row">
+    <div class="row"> 
   
       <!-- This is the left column -->
       <div class="col-md"></div>

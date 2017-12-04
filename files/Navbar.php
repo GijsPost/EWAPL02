@@ -1,6 +1,8 @@
 <?php
 session_start();
 ?>
+
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="index.php">A.R.I.A.S. Publishing Lab</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,9 +44,9 @@ session_start();
         
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button type="submit" class="btn btn-light my-2 my-sm-0">Search</button>
-    </form>
-  </div>
+      
+    </div>
 </nav>
+
+<input type="search" name="keyword" placeholder="Search">
+<div id="results"></div>

@@ -5,7 +5,20 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
 
+    table{
+      width: 100%;
+      text-align: left;
+    }
+
+      td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+    </style>
     
   </head>
   <body>
@@ -13,6 +26,11 @@
   	<?php
       include "../files/DBConnection.php";
       include "../files/Css.php";
+      session_start();
+      if(strcmp($_SESSION['UserType'], "Admin" !== 0)){
+        header("Location: ../index.php");
+        exit();
+      }
     ?>
 
     <div class="col-md">
@@ -24,7 +42,7 @@
     <?php 
     
     $stmt = $db->query("SELECT * FROM user");
-    echo '<table class="table table-striped" style="width: 100%;"> 
+    echo '<table class="table-striped table-condensed"> 
             <thead>
               <tr>
                 <th>UserID</th>
@@ -35,6 +53,8 @@
                 <th>Type</th>
                 <th>Institution</th>
                 <th>Bio</th>
+                <th>Delete</th>
+                <th>Edit</th>
               </tr>
             </thead>
             <tbody>
@@ -50,7 +70,8 @@
           <td>'.$row['UserType'].'</td>
           <td>'.$row['UserInstitution'].'</td>
           <td>'.$row['UserBio'].'</td>
-
+          <td><a href="AdminDeleteUser.php?link='.$row['UserID'].'" class="btn btn-default">Delete</a></td> 
+          <td><a href="AdminAdjustUser.php?link='.$row['UserID'].'" class="btn btn-default">Edit</a></td>   
           </tr>
       ';    
        

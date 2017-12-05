@@ -11,8 +11,17 @@
   <body>
     
   	<?php
+      
       include "../files/DBConnection.php";
       include "../files/Css.php";
+
+      session_start();
+      if(strcmp($_SESSION['UserType'], "Admin" !== 0)){
+        header("Location: ../index.php");
+        exit();
+      }
+      
+
     ?>
 
     <div class="col-md">
@@ -35,7 +44,12 @@
       <div class="col-md">  
         <a href="AdminComment.php">Comments</a>
       </div>
-    </div>    
+    </div>   
+    <div class="row">
+      <div class="col-md">  
+        <a href="../index.php">Go back to normal site</a>
+      </div>
+    </div>  
   
 
   

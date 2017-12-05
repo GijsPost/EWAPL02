@@ -7,8 +7,7 @@ include "files/Search.php";
 
 function showResult(str) {
   if (str.length==0) { 
-    document.getElementById("result").innerHTML="";
-    
+    document.getElementById("result").innerHTML=""; 
     return;
   }
   xmlhttp=new XMLHttpRequest();
@@ -17,7 +16,7 @@ function showResult(str) {
       document.getElementById("result").innerHTML=this.responseText;
     }
   }
-  xmlhttp.open("GET","files/Search.php?key="+str,true);
+  xmlhttp.open("GET","files/Search.php?key="+str);
   xmlhttp.send();
 }
 </script>
@@ -63,11 +62,9 @@ function showResult(str) {
         
       </li>
     </ul>
-<form>
-<input type="text" size="30" onkeyup="showResult(this.value)" placeholder="Search" > 
-</form>
-
-      
+    <form>
+      <input type="text" size="30" onkeyup="showResult(this.value)" placeholder="Search" > 
+    </form>
     </div>
 </nav>
 

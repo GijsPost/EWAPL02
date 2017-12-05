@@ -186,7 +186,7 @@
 						$addPublisherStmt->bindValue(2, $PresumedID);
                         $addPublisherStmt->execute();
 						
-						header("Location: ArticlePage.php?link=".$PresumedID."");
+						header("Location: ArticlePage.php?link=".$PresumedID."&sort=new");
 						exit();
 					} else{
 

@@ -22,7 +22,7 @@
 	  <div class="col-md-1"></div>
       <div class="col-md-2">
 	  
-		<div class="list-group" id="categoryList">
+		<div class="list-group" id="categoryList" >
 		  <a href="Categories.php" class="list-group-item list-group-item-action active">
 			All Categories
 		  </a>

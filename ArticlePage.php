@@ -150,20 +150,30 @@
         <button type="submit" class="btn btn-default" style="float: right">Submit</button>
       </form>
     <?php }?>
+
+
       <h6>Sort by</h6>
+
+
 
       <ul class="nav nav-tabs" style="margin-bottom: 2%;">
         <li class="nav-item">
-        <a class="nav-link active" href="ArticlePage.php">Most recent</a>
+        <a class="nav-link active" href="ArticlePage.php<?php echo "?link=$link&sort=new" ?>">Most recent</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" href="#">Oldest</a>
+      <a class="nav-link active" href="ArticlePage.php<?php echo "?link=$link&sort=old" ?>">Oldest</a>
         </li>
       </ul>
 
       <!-- Get comments from database. -->
       <?php
-        $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate ASC");
+        $sort = $_GET['sort'];
+
+        if($sort == "old"){
+          $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate ASC");
+        }else{
+          $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate DESC");
+        }
 
         while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
             $stmt2 = $db->query("SELECT UserName,UserProfilePicture FROM ewapl02.user WHERE UserID = $row1[User_UserID];");

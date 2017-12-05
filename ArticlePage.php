@@ -106,9 +106,52 @@
 			<!-- Comment section -->
 
       <h3>Comments</h3>
+      <!-- insert comment into database -->
+      <?php
+        $input = $articleId = $userId = "";
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+            $articleId = $link;
+            $userId = $_SESSION["UserID"];
+
+            if (empty($_POST["input"])) {
+              $nameErr = "Empty comment.";
+            } else {
+              $input = $_POST["input"];
+
+              $stmt = $db->prepare("INSERT INTO `ewapl02`.`comment` (`CommentText`, `User_UserID`, `Article_ArticleID`) VALUES (?, ?, ?);");
+                $stmt->bindValue(1, $input);
+                $stmt->bindValue(2, $userId);
+                $stmt->bindValue(3, $articleId);
+                $stmt->execute();
+
+              }
+          }
+
+      ?>
+
+      <!-- Post comment -->
+      <?php
+
+  			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "user"){
+  			?>
+  			<div style = "margin-top: 40px; margin-bottom: 40px;">
+  				<hr>
+  					<center><p>Please  <a href="Login.php">log in</a> to post an comment</p></center>
+  				<hr>
+  			</div>
+      <?php } else{ ?>
+
+      <form method="post" action="">
+        <div class="form-group">
+          <label for="comment">Leave a comment:</label>
+          <textarea class="form-control" rows="3" id="comment" name="input"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default" style="float: right">Submit</button>
+      </form>
+    <?php }?>
       <h6>Sort by</h6>
 
-      <!-- ?link=%203 -->
       <ul class="nav nav-tabs" style="margin-bottom: 2%;">
         <li class="nav-item">
         <a class="nav-link active" href="ArticlePage.php">Most recent</a>
@@ -118,7 +161,7 @@
         </li>
       </ul>
 
-
+      <!-- Get comments from database. -->
       <?php
         $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate ASC");
 

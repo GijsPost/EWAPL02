@@ -9,21 +9,21 @@
 
   </head>
   <body>
-  
-		<?php 
+
+		<?php
             include "files/DBConnection.php";
 			include "files/Navbar.php";
             include "files/Css.php";
         ?>
-	
+
     	<div class="row">
-	
+
 	<!-- This is the left column -->
     <div class="col-md">
-      
+
     </div>
-	
-	
+
+
 	<!-- This is the center column -->
     <div class="col-lg-6 col-md-8">
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
@@ -31,16 +31,16 @@
 					<center><h1>Latest Articles</h1></center>
 				<hr>
 			</div>
-			
+
 			<!-- Start of Articles -->
-			
+
 			<?php
                 $stmt1 = $db->query("SELECT * FROM article");
                 while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
                     $test = $row1['ArticleID'];
-					
-					$linkToArticlePage = "ArticlePage.php?link= $test";
-					
+
+					$linkToArticlePage = "ArticlePage.php?link=$test&sort=new";
+
                     $stmt2 = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $test limit 1 ");
                     $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
                     ?>
@@ -53,19 +53,19 @@
                         </div>
                     </div>
                 <?php } ?>
-			
+
     </div>
-	
-	
+
+
 	<!-- This is the right column -->
     <div class="col-md">
 		<div id="right_block">
-			
+
 		</div>
     </div>
-	
+
 	</div>
-	
-   
+
+
   </body>
 </html>

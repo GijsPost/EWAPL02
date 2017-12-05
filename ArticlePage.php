@@ -170,9 +170,9 @@
         $sort = $_GET['sort'];
 
         if($sort == "old"){
-          $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate DESC");
-        }else{
           $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate ASC");
+        }else{
+          $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate DESC");
         }
 
         while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {

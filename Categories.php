@@ -92,7 +92,7 @@
 				while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
 					
                     $test = $row1['ArticleID'];
-					$linkToArticlePage = "ArticlePage.php?link= $test";
+					$linkToArticlePage = "ArticlePage.php?link= $test &sort=new";
 					
                     $stmt2 = $db->query("select FileName from file f left join article_file af ON af.File_FileID = f.FileID left join article a on af.Articles_ArticleID = a.ArticleID where a.ArticleID = $test limit 1 ");
                     $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);

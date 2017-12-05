@@ -16,7 +16,7 @@
 			include "files/DBConnection.php";
 			include "files/Navbar.php";
 			
-			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "user"){
+			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "Publisher"){
 			?>
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>

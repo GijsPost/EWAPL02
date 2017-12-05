@@ -17,7 +17,7 @@
 			include "files/Navbar.php";
 			include "files/Css.php";
 			
-			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "user"){
+			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "Publisher"){
 			?>
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>
@@ -57,13 +57,13 @@
 					<div class="col-sm-6">
 					<a  href="ArticlePage.php?link=<?php echo $article['ArticleID'];?>"><button type="button" class="btn btn-success">View</button></a>
 					<a  href="ArticlePage.php?link=<?php echo $article['ArticleID'];?>"><button type="button" class="btn btn-warning">Edit</button></a>
-					<button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#exampleModal">Delete</button>
+					<button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#M<?php echo $article['ArticleID'];?>">Delete</button>
 					</div>
 					</div>
 				</div>
 				
 				<!-- Modal -->
-				<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal fade" id="M<?php echo $article['ArticleID'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				  <div class="modal-dialog" role="document">
 					<div class="modal-content">
 					  <div class="modal-header">

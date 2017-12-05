@@ -12,7 +12,7 @@
 	$getArticlePublisherStmt = $db->query("SELECT * FROM user_article WHERE Articles_ArticleID = $ArticleID");
 	
 	while($ArticlePublisherID = $getArticlePublisherStmt->fetch(PDO::FETCH_ASSOC)){
-		if($LoggedInUserType != "admin"){
+		if($LoggedInUserType != "Admin"){
 			if($LoggedInUserID != $ArticlePublisherID['Users_UserID']){
 				echo "You are not authorised to delete this article.";
 			} else{ echo "You are the owner of this article, welcome. Deleting Article...";
@@ -29,5 +29,8 @@
 		
 		$deleteArticleStmt = $db->query("DELETE FROM article WHERE ArticleID = $ArticleID");
 		$deleteArticleStmt->execute();
+		
+		header("Location: YourArticles.php");
+		exit();
 	}
 ?>

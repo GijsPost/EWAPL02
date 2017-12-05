@@ -47,7 +47,7 @@ function showResult(str) {
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="OwnProfilePage.php">Your profile</a>
-              <a class="dropdown-item" href="OwnProfilePage.php">Your Articles</a>
+              <a class="dropdown-item" href="YourArticles.php">Your Articles</a>
 			  <?php if($_SESSION['UserType'] == "Publisher" || $_SESSION['UserType'] == "Admin"){ ?> <a class="dropdown-item" href="PostNewArticle.php">Post a new article</a> <?php }?>
               <a class="dropdown-item" href="LogOut.php">Log out</a>
             </div>

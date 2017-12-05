@@ -16,15 +16,38 @@
 			include "files/DBConnection.php";
 			include "files/Navbar.php";
 			
-			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] == "User"){
+			$ArticleID = null;
+			if(!empty($_GET['articleToEdit'])){ $ArticleID = $_GET['articleToEdit']; }
+			$ErrorMsg = "Error. Provide article ID to edit.";
+			$LoggedInUserID = $_SESSION['UserID'];
+			$LoggedInUserType = $_SESSION['UserType'];
+			
+			$editOK = false;
+			
+			if(!empty($ArticleID)){	
+			$getArticlePublisherStmt = $db->query("SELECT * FROM user_article WHERE Articles_ArticleID = $ArticleID");
+			
+			while($ArticlePublisherID = $getArticlePublisherStmt->fetch(PDO::FETCH_ASSOC)){
+				if($LoggedInUserType != "Admin"){
+					if($LoggedInUserID != $ArticlePublisherID['Users_UserID']){
+						$ErrorMsg = "You are not authorized to edit this article";
+					} else{
+						$editOK = true;
+					}
+				} else{
+					$editOK = true;
+				}
+			}
+			} 
+			
+			if(!$editOK){
 			?>
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>
-					<center><h1>Please log in to post an article</h1></center>
+					<center><h1><?php echo $ErrorMsg; ?></h1></center>
 				<hr>
 			</div>
-			<?php } else{
-			
+			<?php } else {
 			
 			$ArticleTitle = $ArticleTitleError = "";
 			$ArticleSummary = $SummaryError = "";
@@ -35,39 +58,43 @@
 			$imageEndStatus = false;
 			$articleEndStatus = false;
 			
-			//Find ID of the article to be posted
-			$sql = "SHOW TABLE STATUS LIKE 'article'";
+			//Get the current Article
+			$sql = "SELECT * FROM article WHERE ArticleID = $ArticleID";
 			$result=$db->query($sql);
 			$row = $result->fetch(PDO::FETCH_ASSOC);
-			$PresumedID = $row['Auto_increment'];
 			
 			if ($_SERVER["REQUEST_METHOD"] == "POST") {
   				$error = "";			
 				
-  				$ArticleTitle = strip_tags($_POST["inputArticleTitle"]);
+  				$newArticleTitle = strip_tags($_POST["inputArticleTitle"]);
 	  			if (empty($_POST["inputArticleTitle"])) {
 	                $ArticleTitleError = "Article title cannot be empty";
 	            } else {
-	                $ArticleTitle = strip_tags($_POST["inputArticleTitle"]);
-	                if (strlen($ArticleTitle) < 10) {
+	                $newArticleTitle = strip_tags($_POST["inputArticleTitle"]);
+	                if (strlen($newArticleTitle) < 10) {
 	                    $ArticleTitleError = "Article Title must be at least 10 characters long"; 
 	                }
 	            }
-				$ArticleSummary = strip_tags($_POST["inputSummary"]);
+				
+				$newArticleSummary = strip_tags($_POST["inputSummary"]);
 	  			if (empty($_POST["inputSummary"])) {
 	                $SummaryError = "Summary cannot be empty";
 	            } else {
-	                $ArticleSummary = strip_tags($_POST["inputSummary"]);
-	                if (strlen($ArticleSummary) > 500) {
+	                $newArticleSummary = strip_tags($_POST["inputSummary"]);
+	                if (strlen($newArticleSummary) > 500) {
 	                    $SummaryError = "Summary is too long, shorten it to 500 characters or less"; 
 	                }
 	            }
 
-				$stmt1 = $db->query("select count(*) from article where ArticleTitle = '$ArticleTitle'");
-	            $row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-	            if($row1['count(*)'] > 0){
-	            	$ArticleTitleError = "An article with this title already exists";
-				}				
+				if($newArticleTitle != $row['ArticleTitle']){
+					$stmt1 = $db->query("select count(*) from article where ArticleTitle = '$ArticleTitle'");
+					$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
+					if($row1['count(*)'] > 0){
+						$ArticleTitleError = "An article with this title already exists";
+					}
+				} else{
+				
+				}
 
 	            if(empty($ArticleTitleError) && empty($SummaryError)){
 					
@@ -83,47 +110,48 @@
 					
                         // Check if image file is a actual image or fake image
                         
-                    $check = empty($_FILES["imageToUpload"]["tmp_name"]);
-                            // Check if file already exists
-                            if (file_exists($ArticlePrefix.$PresumedID.".".$imageFileType)) {
-                                $imgError = "Sorry, file already exists.";
-                                $uploadOk = 0;
-                            }
+                    $checkImage = empty($_FILES["imageToUpload"]["tmp_name"]);
+					
+					if (!$checkImage){
+
                             // Allow certain file formats
                             if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
                                 $imgError = "Sorry, only JPG, JPEG & PNG files are allowed.";
                                 $uploadOk = 0;
                             }
-							
+					}		
 							// Check if article file is a actual pdf or fake
                         
-                        $check = empty($_FILES["fileToUpload"]["tmp_name"]);
-                            // Check if file already exists
-                            if (file_exists($ArticlePrefix.$PresumedID.".".$articleFileType)) {
-                                $imgError = "Sorry, file already exists.";
-                                $uploadOk = 0;
-                            }
+                    $checkFile = empty($_FILES["fileToUpload"]["tmp_name"]);
+					
+					if(!$checkFile){
 
                             // Allow certain file formats
                             if($articleFileType != "pdf") {
                                 $imgError = "Sorry, only PDF files are allowed.";
                                 $uploadOk = 0;
                             }
-							
+					}		
                             // Check if $uploadOk is set to 0 by an error
                             if ($uploadOk == 1) { 
-                                $target_file_image = $ArticlePrefix.$PresumedID.".".$imageFileType;
-								$target_file_article = $ArticlePrefix.$PresumedID.".".$articleFileType;
+                                $target_file_image = $ArticlePrefix.$ArticleID.".".$imageFileType;
+								$target_file_article = $ArticlePrefix.$ArticleID.".".$articleFileType;
 							
-								//INSERT ARTICLE
-								$stmt = $db->prepare('INSERT INTO article (ArticleTitle, ArticleText) 
-								VALUES (?,?)');
-								$stmt->bindValue(1, $ArticleTitle, PDO::PARAM_STR);
-								$stmt->bindValue(2, $ArticleSummary, PDO::PARAM_STR);
+							
+								//Override title and summary
+								$stmt = $db->prepare('UPDATE article SET ArticleTitle=? WHERE ArticleID = ?');  
+								$stmt->bindValue(1, $newArticleTitle, PDO::PARAM_STR);
+								$stmt->bindValue(2, $ArticleID, PDO::PARAM_STR);
 								$stmt->execute();
 								
-								$stmt2 = $db->query("SELECT ArticleID FROM article ORDER BY ArticleID DESC LIMIT 0, 1;");
-								$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+								$stmt = $db->prepare('UPDATE article SET ArticleText=? WHERE ArticleID = ?');  
+								$stmt->bindValue(1, $newArticleSummary, PDO::PARAM_STR);
+								$stmt->bindValue(2, $ArticleID, PDO::PARAM_STR);
+								$stmt->execute();
+								
+								//Resetting all categories
+								$stmt = $db->prepare("DELETE FROM article_category WHERE ArticleID = ?");
+								$stmt->bindValue(1, $ArticleID, PDO::PARAM_STR);
 								
 								//Check for categories
 								$getCategoryStmt = $db->query("SELECT * FROM category");
@@ -131,7 +159,7 @@
 									$CategoryID = $categories['CategoryID'];
 									if(isset($_POST[$CategoryID])){
 										$insertStmt = $db->prepare("INSERT INTO article_category (ArticleID, CategoryID) VALUES (?,?);");
-										$insertStmt->bindValue(1, $PresumedID);
+										$insertStmt->bindValue(1, $ArticleID);
 										$insertStmt->bindValue(2, $categories['CategoryID']);
 										$insertStmt->execute();
 									}
@@ -140,13 +168,15 @@
 								$articleEndStatus = true;
 								
 								//INSERT IMAGE
+								if(!$checkImage){
                                 if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], "images/articleImages/{$target_file_image}")) {
-                                    $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
+									
+									$stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
                                     $stmt1->bindValue(1, $target_file_image);
                                     $stmt1->execute(); 
 									
-									$stmt1 = $db->prepare("INSERT INTO article_file (Articles_ArticleID, File_FileID) VALUES(?,(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1));");
-                                    $stmt1->bindValue(1, $PresumedID);
+									$stmt1 = $db->prepare("UPDATE article_file SET File_FileID=(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1))WHERE Articles_ArticleID = ?");
+                                    $stmt1->bindValue(1, $ArticleID);
                                     $stmt1->execute(); 
 									//Gives a sign that the image is uploaded ok.
 									$imageEndStatus = true;
@@ -158,15 +188,18 @@
                                 } else {
                                     $imgError = "Sorry, there was an error uploading your image.";
                                 }
+								}
 								
 								//INSERT PDF FILE
+								if(!$checkFile){
 								if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "articles/{$target_file_article}")) {
-                                    $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
+                                    
+									$stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
                                     $stmt1->bindValue(1, $target_file_article);
                                     $stmt1->execute(); 
 									
-									$stmt1 = $db->prepare("INSERT INTO article_file (Articles_ArticleID, File_FileID) VALUES(?,(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1));");
-                                    $stmt1->bindValue(1, $PresumedID);
+									$stmt1 = $db->prepare("UPDATE article_file SET File_FileID=(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1) WHERE Articles_ArticleID =?");
+                                    $stmt1->bindValue(1, $ArticleID);
                                     $stmt1->execute();
 									//Gives a sign that the pdf file is uploaded ok.
 									$fileEndStatus = true;
@@ -177,17 +210,13 @@
                                 } else {
                                     $imgError = "Sorry, there was an error uploading your pdf file.";
                                 }
+								}
                             }
 					if($articleEndStatus && $imageEndStatus && $fileEndStatus){
 						
-						//If upload is ok, add current logged in user as article publisher
-						$addPublisherStmt = $db->prepare("INSERT INTO user_article (Users_UserID, Articles_ArticleID) VALUES(?,?);");
-                        $addPublisherStmt->bindValue(1, $_SESSION['UserID']);
-						$addPublisherStmt->bindValue(2, $PresumedID);
-                        $addPublisherStmt->execute();
+						//header("Location: ArticlePage.php?link=".$ArticleID."&sort=new");
+						//exit();
 						
-						header("Location: ArticlePage.php?link=".$PresumedID."&sort=new");
-						exit();
 					} else{
 
 					}
@@ -208,7 +237,7 @@
     <div class="col-lg-6 col-md-8">
 			<div style = "margin-top: 40px; margin-bottom: 40px;">
 				<hr>
-					<center><h1>Upload new Article</h1></center>
+					<center><h1>Edit Article</h1></center>
 				<hr>
 			</div>
 			

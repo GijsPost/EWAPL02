@@ -90,7 +90,7 @@
 	                $stmt->bindValue(1, $username, PDO::PARAM_STR);
 	                $stmt->bindValue(2, $hashedww, PDO::PARAM_STR);
 	                $stmt->bindValue(3, $email, PDO::PARAM_STR);
-	                $stmt->bindValue(4, 'user', PDO::PARAM_STR);
+	                $stmt->bindValue(4, 'User', PDO::PARAM_STR);
 	                $stmt->bindValue(5, $institution);
 	                $stmt->execute();
 	                $stmt1 = $db->query("select UserID from user where UserEmail = '$email' ");

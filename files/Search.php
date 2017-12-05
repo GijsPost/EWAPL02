@@ -18,74 +18,72 @@
 		if($num_rows1 > 0) {
 	        $vorige = '';
 	  		echo '<h1>Users</h1>';
-	        echo '<table>';
 	        while($row = $Users->fetch(PDO::FETCH_ASSOC)) {
-	            
-
 	            if ($vorige !== ucfirst(substr($row['UserName'],0,1))){
-	                if (ctype_digit(substr($row['UserName'],0,1)) == true) {
 	                    echo'
-	                        <tr>
-	                            <th>
-	                                <h1>#</h1>
-	                            </th>
-	                        </tr>';
-	                } else {
-	                    echo'
-	                        <tr>
-	                            <th class="contact">
-	                                <h3>'.substr($row['UserName'],0,1).'</h3>
-	                            </th>
-	                        </tr>';
-	                }
+	                       	<div class="row">
+	                       		<div class="col-sm-6"> 
+	                                <h3>'.ucfirst(substr($row['UserName'],0,1)).'</h3>
+	                        	</div>
+	                        </div>
+	                        ';  
 	            }
 	            echo '
-	                <tr>
-	                    <th>
-	                        <a href="Profile.php?link='.$row['UserID'].'">
+	                <div class="row">
+	                	<div class="col-sm-6">
+	                        <a href="ProfilePage.php?link='.$row['UserID'].'" style="margin-left:1em; color: inherit; text-decoration:none;" >
 	                        '.$row['UserName'].'
 	                        </a>
-	                    </th>
-	                </tr>';
+	                    </div>
+	                </div>';
 	            $vorige = ucfirst(substr($row['UserName'],0,1));
-	        } echo '</table>'; 
+	        }; 
 	    }
 
 	    if($num_rows2 > 0) {
 	        $vorige = '';
 	  		echo '<h1>Articles</h1>';
-	        echo '<table>';
 	        while($row = $Articles->fetch(PDO::FETCH_ASSOC)) {
-
-	            if ($vorige !== ucfirst(substr($row['ArticleTitle'],0,1))){
-	                if (ctype_digit(substr($row['ArticleTitle'],0,1)) == true) {
-	                    echo'
-	                        <tr>
-	                            <th>
-	                                <h1>#</h1>
-	                            </th>
-	                        </tr>';
-	                } else {
-	                    echo'
-	                        <tr>
-	                            <th class="contact">
-	                                <h3>'.substr($row['ArticleTitle'],0,1).'</h3>
-	                            </th>
-	                        </tr>';
-	                }
+	            if ($vorige !== ucfirst(substr($row['ArticleTitle'],0,1))){   
+	                echo'
+	                    <div class="row">
+	                   		<div class="col-sm-6"> 
+	                            <h3>'.ucfirst(substr($row['ArticleTitle'],0,1)).'</h3>
+	                       	</div>
+	                    </div>
+	                    ';  
 	            }
+
+	            $Creator = $db->query( "SELECT * FROM user WHERE UserID = (SELECT Users_UserID FROM user_article WHERE Articles_ArticleID = ".$row['ArticleID']." LIMIT 1)");
+	            $CreatorRows = $Creator->fetch();
 	            echo '
-	                <tr>
-	                    <th>
-	                        <a href="ArticlePage.php?link='.$row['ArticleID'].'">
+	                <div class="row">
+	                   	<div class="col-sm-8"> 
+	                        <a href="ArticlePage.php?link='.$row['ArticleID'].'" style="margin-left:1em; color: inherit; text-decoration:none;">
 	                        '.$row['ArticleTitle'].'
 	                        </a>
-	                    </th>
-	                </tr>';
-	            $vorige = ucfirst(substr($row['ArticleTitle'],0,1));
-	        } echo '</table>'; 
-	    }
+	                  	</div>
+	                  	<div class="col-sm-4">
+	                  		By: 
+	                  		<a href="ProfilePage.php?link='.$CreatorRows['UserID'].'" style="color: inherit; text-decoration:none;" >
+	                        '.$CreatorRows['UserName'].'
+	                        </a>
+	                  	</div> 
 
+                    </div>
+                    ';  
+	            $vorige = ucfirst(substr($row['ArticleTitle'],0,1));
+	        }
+	    }
+	    if($num_rows1 == 0 && $num_rows2 == 0){
+	    	echo'
+	    		<div class="row">
+	    			<div class="col-sm-8"> 
+	    				<h1>No results</h1> 
+	    			</div>
+	    		</div> 
+	    	';
+	    }
 
 
 

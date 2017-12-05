@@ -31,10 +31,18 @@
 			$error = "";
 			$imgError = "";
 			$ArticlePrefix = "A";
+			$fileEndStatus = false;
+			$imageEndStatus = false;
+			$articleEndStatus = false;
+			
+			//Find ID of the article to be posted
+			$sql = "SHOW TABLE STATUS LIKE 'article'";
+			$result=$db->query($sql);
+			$row = $result->fetch(PDO::FETCH_ASSOC);
+			$PresumedID = $row['Auto_increment'];
 			
 			if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  				$error = "";
-				
+  				$error = "";			
 				
   				$ArticleTitle = strip_tags($_POST["inputArticleTitle"]);
 	  			if (empty($_POST["inputArticleTitle"])) {
@@ -59,32 +67,9 @@
 	            $row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 	            if($row1['count(*)'] > 0){
 	            	$ArticleTitleError = "An article with this title already exists";
-				}
-				
+				}				
 
 	            if(empty($ArticleTitleError) && empty($SummaryError)){
-	            
-	            	$stmt = $db->prepare('INSERT INTO article (ArticleTitle, ArticleText) 
-	                VALUES (?,?)');
-	                $stmt->bindValue(1, $ArticleTitle, PDO::PARAM_STR);
-	                $stmt->bindValue(2, $ArticleSummary, PDO::PARAM_STR);
-	                $stmt->execute();
-					
-					$stmt2 = $db->query("SELECT ArticleID FROM article ORDER BY ArticleID DESC LIMIT 0, 1;");
-					$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-					$PresumedID = ($row2['ArticleID']);
-					
-	            	//Check for categories
-					$getCategoryStmt = $db->query("SELECT * FROM category");
-					while ($categories = $getCategoryStmt->fetch(PDO::FETCH_ASSOC)) {
-						$CategoryID = $categories['CategoryID'];
-						if(isset($_POST[$CategoryID])){
-							$insertStmt = $db->prepare("INSERT INTO article_category (ArticleID, CategoryID) VALUES (?,?);");
-							$insertStmt->bindValue(1, $PresumedID);
-							$insertStmt->bindValue(2, $categories['CategoryID']);
-							$insertStmt->execute();
-						}
-					}
 					
 					$uploadOk = 1;
                     $target_dir_images = "images/articleImages";
@@ -95,19 +80,13 @@
                     $imageFileType = pathinfo($target_file_image,PATHINFO_EXTENSION);
 					$articleFileType = pathinfo($target_file_article,PATHINFO_EXTENSION);
 
-
+					
                         // Check if image file is a actual image or fake image
                         
-                        $check = empty($_FILES["imageToUpload"]["tmp_name"]);
-                        if($check != 1 && $uploadOk!= 0) {
+                    $check = empty($_FILES["imageToUpload"]["tmp_name"]);
                             // Check if file already exists
                             if (file_exists($ArticlePrefix.$PresumedID.".".$imageFileType)) {
                                 $imgError = "Sorry, file already exists.";
-                                $uploadOk = 0;
-                            }
-                            // Check file size
-                            if ($_FILES["imageToUpload"]["size"] > 500000) {
-                                $imgError = "Sorry, your file is too large.";
                                 $uploadOk = 0;
                             }
                             // Allow certain file formats
@@ -119,17 +98,12 @@
 							// Check if article file is a actual pdf or fake
                         
                         $check = empty($_FILES["fileToUpload"]["tmp_name"]);
-                        if($check != 1 && $uploadOk!= 0) {
                             // Check if file already exists
                             if (file_exists($ArticlePrefix.$PresumedID.".".$articleFileType)) {
                                 $imgError = "Sorry, file already exists.";
                                 $uploadOk = 0;
                             }
-                            // Check file size
-                            if ($_FILES["fileToUpload"]["size"] > 500000) {
-                                $imgError = "Sorry, your file is too large.";
-                                $uploadOk = 0;
-                            }
+
                             // Allow certain file formats
                             if($articleFileType != "pdf") {
                                 $imgError = "Sorry, only PDF files are allowed.";
@@ -140,7 +114,32 @@
                             if ($uploadOk == 1) { 
                                 $target_file_image = $ArticlePrefix.$PresumedID.".".$imageFileType;
 								$target_file_article = $ArticlePrefix.$PresumedID.".".$articleFileType;
+							
+								//INSERT ARTICLE
+								$stmt = $db->prepare('INSERT INTO article (ArticleTitle, ArticleText) 
+								VALUES (?,?)');
+								$stmt->bindValue(1, $ArticleTitle, PDO::PARAM_STR);
+								$stmt->bindValue(2, $ArticleSummary, PDO::PARAM_STR);
+								$stmt->execute();
 								
+								$stmt2 = $db->query("SELECT ArticleID FROM article ORDER BY ArticleID DESC LIMIT 0, 1;");
+								$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+								
+								//Check for categories
+								$getCategoryStmt = $db->query("SELECT * FROM category");
+								while ($categories = $getCategoryStmt->fetch(PDO::FETCH_ASSOC)) {
+									$CategoryID = $categories['CategoryID'];
+									if(isset($_POST[$CategoryID])){
+										$insertStmt = $db->prepare("INSERT INTO article_category (ArticleID, CategoryID) VALUES (?,?);");
+										$insertStmt->bindValue(1, $PresumedID);
+										$insertStmt->bindValue(2, $categories['CategoryID']);
+										$insertStmt->execute();
+									}
+								}
+								//Gives a sign that the article is uploaded OK
+								$articleEndStatus = true;
+								
+								//INSERT IMAGE
                                 if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], "images/articleImages/{$target_file_image}")) {
                                     $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
                                     $stmt1->bindValue(1, $target_file_image);
@@ -149,6 +148,9 @@
 									$stmt1 = $db->prepare("INSERT INTO article_file (Articles_ArticleID, File_FileID) VALUES(?,(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1));");
                                     $stmt1->bindValue(1, $PresumedID);
                                     $stmt1->execute(); 
+									//Gives a sign that the image is uploaded ok.
+									$imageEndStatus = true;
+									
                                     while (ob_get_status()) 
                                     {
                                         ob_end_clean();
@@ -157,6 +159,7 @@
                                     $imgError = "Sorry, there was an error uploading your image.";
                                 }
 								
+								//INSERT PDF FILE
 								if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "articles/{$target_file_article}")) {
                                     $stmt1 = $db->prepare("INSERT INTO file (FileName) VALUES(?);");
                                     $stmt1->bindValue(1, $target_file_article);
@@ -164,7 +167,9 @@
 									
 									$stmt1 = $db->prepare("INSERT INTO article_file (Articles_ArticleID, File_FileID) VALUES(?,(SELECT FileID FROM file ORDER BY FileID DESC LIMIT 0, 1));");
                                     $stmt1->bindValue(1, $PresumedID);
-                                    $stmt1->execute(); 
+                                    $stmt1->execute();
+									//Gives a sign that the pdf file is uploaded ok.
+									$fileEndStatus = true;
                                     while (ob_get_status()) 
                                     {
                                         ob_end_clean();
@@ -173,22 +178,25 @@
                                     $imgError = "Sorry, there was an error uploading your pdf file.";
                                 }
                             }
-                        } else {
-                            $imgError = "File is not an image.";
-                            $uploadOk = 0;
-                        }
-                    }else{
-                        echo "gelukt";
-                    }
+					if($articleEndStatus && $imageEndStatus && $fileEndStatus){
+						
+						//If upload is ok, add current logged in user as article publisher
+						$addPublisherStmt = $db->prepare("INSERT INTO user_article (Users_UserID, Articles_ArticleID) VALUES(?,?);");
+                        $addPublisherStmt->bindValue(1, $_SESSION['UserID']);
+						$addPublisherStmt->bindValue(2, $PresumedID);
+                        $addPublisherStmt->execute();
+						
+						header("Location: ArticlePage.php?link=".$PresumedID."");
+						exit();
+					} else{
 
-	            	header("Location: ArticlePage.php?link=".$PresumedID."");
-               	 	exit();
+					}
 	            }           
 			}
 			
 		?>
 	
-    	<div class="row">
+    <div class="row">
 	
 	<!-- This is the left column -->
     <div class="col-md">

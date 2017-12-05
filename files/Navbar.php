@@ -46,8 +46,8 @@ function showResult(str) {
               <?php echo $_SESSION['UserName']?>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="ProfilePage.php">Your profile</a>
-              <a class="dropdown-item" href="ProfilePage.php">Your Articles</a>
+              <a class="dropdown-item" href="OwnProfilePage.php">Your profile</a>
+              <a class="dropdown-item" href="OwnProfilePage.php">Your Articles</a>
               <a class="dropdown-item" href="LogOut.php">Log out</a>
             </div>
             <?php

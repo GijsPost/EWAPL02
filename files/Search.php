@@ -31,7 +31,7 @@
 	            echo '
 	                <div class="row">
 	                	<div class="col-sm-6">
-	                        <a href="Profile.php?link='.$row['UserID'].'" style="margin-left:1em; color: inherit; text-decoration:none;" >
+	                        <a href="ProfilePage.php?link='.$row['UserID'].'" style="margin-left:1em; color: inherit; text-decoration:none;" >
 	                        '.$row['UserName'].'
 	                        </a>
 	                    </div>
@@ -65,7 +65,7 @@
 	                  	</div>
 	                  	<div class="col-sm-4">
 	                  		By: 
-	                  		<a href="Profile.php?link='.$CreatorRows['UserID'].'" style="color: inherit; text-decoration:none;" >
+	                  		<a href="ProfilePage.php?link='.$CreatorRows['UserID'].'" style="color: inherit; text-decoration:none;" >
 	                        '.$CreatorRows['UserName'].'
 	                        </a>
 	                  	</div> 

@@ -59,7 +59,7 @@
 	            echo '
 	                <div class="row">
 	                   	<div class="col-sm-8"> 
-	                        <a href="ArticlePage.php?link='.$row['ArticleID'].'" style="margin-left:1em; color: inherit; text-decoration:none;">
+	                        <a href="ArticlePage.php?link='.$row['ArticleID'].'&sort=new" style="margin-left:1em; color: inherit; text-decoration:none;">
 	                        '.$row['ArticleTitle'].'
 	                        </a>
 	                  	</div>

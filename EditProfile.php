@@ -14,6 +14,7 @@
       include "files/DBConnection.php";
       include "files/Navbar.php";
       include "files/Css.php";
+      include 'ImageResize.php';
 
 
 
@@ -81,10 +82,7 @@
         $target_dir = "images/userProfilePicture/";
         $target_file = $UserPrefix.$target_dir.basename($_FILES["fileToUpload"]["name"]);
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-        if ($_FILES["fileToUpload"]["size"] > 500000) {
-            $imgError = "Sorry, your file is too large.";
-            $update = 0;
-        }
+       
         // Allow certain file formats
         if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
             $imgError = "Sorry, only JPG, JPEG & PNG files are allowed.";
@@ -96,18 +94,22 @@
         // Check if $uploadOk is set to 0 by an error
         if ($update == 1) { 
             $target_file = $UserPrefix.$_SESSION['UserID'].".".$imageFileType;
-            if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], "images/userProfilePicture/{$target_file}")) {
-                $stmt1 = $db->prepare("UPDATE user SET UserProfilePicture = ? WHERE UserID = ?");
-                $stmt1->bindValue(1, $UserPrefix.$_SESSION['UserID'].".".$imageFileType);
-                $stmt1->bindValue(2, $_SESSION['UserID']);
-                $stmt1->execute(); 
-            } else {
-                $update = 0;
-                $error = "Sorry, there was an error uploading your image.";
-            }
+            $stmt1 = $db->prepare("UPDATE user SET UserProfilePicture = ? WHERE UserID = ?");
+            $stmt1->bindValue(1, $UserPrefix.$_SESSION['UserID'].".".$imageFileType);
+            $stmt1->bindValue(2, $_SESSION['UserID']);
+            $stmt1->execute();
+            $target_dir = "images/userProfilePicture/";
+            $image = new SimpleImage();
+            $image->load($_FILES["fileToUpload"]['tmp_name']);
+            $image->resize(500,500);
+            $image->save($target_dir.$target_file);
+            
         }
       }
       if($update == 1){
+        header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        header("Pragma: no-cache"); // HTTP 1.0.
+        header("Expires: 0");
         header("Location: OwnProfilePage.php");
       }
       

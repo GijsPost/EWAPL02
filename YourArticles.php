@@ -47,6 +47,16 @@
 			<?php
 				$UserID = $_SESSION['UserID'];
 				$getArticlesStmt = $db->query("SELECT * from article a left join user_article u on a.ArticleID = u.Articles_ArticleID where u.Users_UserID = $UserID");
+				$article = $getArticlesStmt->fetch();
+				if(is_null($article['ArticleTitle'])){
+					echo'
+						<div class="row">
+							<div class="col-sm-8">
+								<h4> You have no articles yet, <a href="PostNewArticle.php">post a article!</a></h4>
+							</div>	
+						</div>	
+					';
+				}else{
 				while($article = $getArticlesStmt->fetch(PDO::FETCH_ASSOC)){
 			?>
 				<div class="alert alert-primary clearfix" role="alert">
@@ -84,7 +94,7 @@
 				</div>
 				
 			<?php
-			}
+			}}
 			
 
 			?>

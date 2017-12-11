@@ -109,7 +109,7 @@
              <div class="form-group row">
                 <div class="col-sm-2"></div>
                 <div class="col-sm-5">
-                    <span style="font-size: 14px">Forgot your password? <a href="ForgotPassword">Click here</a></span>
+                    <span style="font-size: 14px">Forgot your password? <a href="ForgotPassword.php">Click here</a></span>
                 </div>
             </div>
         </form> 

@@ -62,6 +62,12 @@ function showResult(str) {
        
         
       </li>
+      <?php if(isset($_SESSION['UserType']) && $_SESSION['UserType'] === "Admin"){
+        ?>
+      <li class="nav-item active">
+        <a class="nav-link" href="Admin/AdminOverview.php">Admin</a>
+      </li> <?php ; } ?>
+
     </ul>
     <form>
       <input type="text" size="30" onkeyup="showResult(this.value)" placeholder="Search" > 

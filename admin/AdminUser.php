@@ -27,7 +27,7 @@
       include "../files/DBConnection.php";
       include "../files/Css.php";
       session_start();
-      if(strcmp($_SESSION['UserType'], "Admin" !== 0)){
+      if(strcmp($_SESSION['UserType'], "Admin") !== 0){
         header("Location: ../index.php");
         exit();
       }
@@ -70,8 +70,8 @@
           <td>'.$row['UserType'].'</td>
           <td>'.$row['UserInstitution'].'</td>
           <td>'.$row['UserBio'].'</td>
-          <td><a href="AdminDeleteUser.php?link='.$row['UserID'].'" class="btn btn-default">Delete</a></td> 
-          <td><a href="AdminAdjustUser.php?link='.$row['UserID'].'" class="btn btn-default">Edit</a></td>   
+          <td><a href="AdminDeleteUser.php?link='.$row['UserID'].'">Delete</a></td> 
+          <td><a href="AdminAdjustUser.php?link='.$row['UserID'].'">Edit</a></td>   
           </tr>
       ';    
        

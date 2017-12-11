@@ -13,7 +13,7 @@
   	<?php
       include "../files/DBConnection.php";
       session_start();
-      if(strcmp($_SESSION['UserType'], "Admin" !== 0)){
+      if(strcmp($_SESSION['UserType'], "Admin") !== 0){
         header("Location: ../index.php");
         exit();
       }

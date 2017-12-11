@@ -60,13 +60,8 @@
             $update = 0;
         }
       }
-      if(empty($_POST['inputBio'])){
-        $error = "Bio can't be empty";
-        $update = 0;
-      }else{
-        $update = 1;
-        $bio = strip_tags($_POST['inputBio']);
-      }
+      $bio = strip_tags($_POST['inputBio']);
+      
       if($update == 1){
         $institution = $_POST["institutionInput"];
         $stmt1 = $db->prepare("UPDATE user SET UserEmail = ?, UserBio = ?, UserInstitution = ? WHERE UserID = ?");
@@ -81,8 +76,8 @@
         $_SESSION['UserInstitution'] = $institution;
       }
 
-      $check = empty($_FILES["fileToUpload"]["tmp_name"]);
-      if($check != 1 && $update == 1){
+      
+      if(!empty($_FILES["fileToUpload"]["name"]) && $update == 1){
         $target_dir = "images/userProfilePicture/";
         $target_file = $UserPrefix.$target_dir.basename($_FILES["fileToUpload"]["name"]);
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -107,13 +102,15 @@
                 $stmt1->bindValue(2, $_SESSION['UserID']);
                 $stmt1->execute(); 
             } else {
+                $update = 0;
                 $error = "Sorry, there was an error uploading your image.";
             }
         }
-      } else {
-          $imgError = "File is not an image.";
-          $uploadOk = 0;
       }
+      if($update == 1){
+        header("Location: OwnProfilePage.php");
+      }
+      
       }
     
       

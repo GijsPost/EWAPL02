@@ -15,11 +15,11 @@
     include "../files/Css.php";
 
     session_start();
-      if(strcmp($_SESSION['UserType'], "Admin" !== 0)){
-        header("Location: ../index.php");
-        exit();
-      }
-    
+    if(strcmp($_SESSION['UserType'], "Admin") !== 0){
+      header("Location: ../index.php");
+      exit();
+    }
+  
 
     if($_SERVER["REQUEST_METHOD"] == "POST") {
       $userID = $_POST['userID'];

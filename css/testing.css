@@ -29,3 +29,15 @@ html, body { height: 100%; width: 100%; margin: 0; }
 .affix {
     position:fixed;
 }
+
+ table{
+      width: 100%;
+      text-align: left;
+    }
+
+    td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }

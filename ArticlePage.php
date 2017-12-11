@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 
+
+ 
   </head>
   <body>
 
@@ -15,6 +17,7 @@
 			include "files/Navbar.php";
 			include "files/Css.php";
 		?>
+
 
 	<div class="row">
 
@@ -36,7 +39,11 @@
 
 		$getArticlePublisherStmt = $db->query("select * from user s left join user_article ua ON ua.Users_UserID = s.UserID left join article a ON ua.Articles_ArticleID = a.ArticleID where a.ArticleID = $ArticleID");
 		$ArticlePublisher = $getArticlePublisherStmt->fetch(PDO::FETCH_ASSOC);
+    $ArticlePublisherID = $ArticlePublisher['UserID'];
+   
+ 
 	?>
+
 
 	<!-- This is the center column -->
     <div class="col-lg-8 col-md-10">
@@ -66,6 +73,8 @@
 
 			<hr>
 
+
+      <!-- downloadfiles select FileName  from file f inner join article_file af on f.FileID = af.File_FileID inner join article ar on  af.Articles_ArticleID = ar.ArticleID where ArticleID = 54 AND FileName like "%.pdf" -->
 			<!-- Midden download balk -->
 
 			<div class="alert alert-primary" role="alert">
@@ -87,18 +96,19 @@
 				<div class="col">
 					<h5 style="margin-left:10px;"><?php echo $ArticlePublisher['UserName'];
 
-						if($ArticlePublisher['UserType'] == 'publisher'){
-							?><span class="badge badge-success" style="margin-left: 2%;">Publisher</span><?php
+						if($ArticlePublisher['UserType'] == 'Publisher'){
+							?><span class="badge badge-success" style="margin-left: 1ex;">Publisher</span><?php
 						}
-						if($ArticlePublisher['UserType'] == 'admin'){
-							?><span class="badge badge-danger" style="margin-left: 2%;">Administrator</span><?php
+						if($ArticlePublisher['UserType'] == 'Admin'){
+							?><span class="badge badge-danger" style="margin-left: 1ex;">Admin</span><?php
 						}
 					?></h5>
 					<p style="margin-left:10px;"><?php echo $ArticlePublisher['UserInstitution']?></p>
 				</div>
 				</div>
-				<button type="button" class="btn btn-primary">Go to profile</button>
-				<button type="button" class="btn btn-secondary">Download Article</button>
+
+				<a href="ProfilePage.php?link= <?php echo $ArticlePublisherID;?> "  class="btn btn-primary">Profile</a>
+				<a href="DownloadArticle.php?link=<?php echo $_GET['link'];?>" class="btn btn-secondary" style="color: white;">Download</a>
 			</div>
 
 			<hr>
@@ -127,11 +137,6 @@
 
               }
           }
-
-      ?>
-
-      <!-- Post comment -->
-      <?php
 
   			if(!isset($_SESSION['UserType'])){
   			?>
@@ -170,13 +175,13 @@
         $sort = $_GET['sort'];
 
         if($sort == "old"){
-          $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate ASC");
+          $stmt1 = $db->query("SELECT * FROM comment WHERE Article_ArticleID = $link ORDER BY CommentDate ASC");
         }else{
-          $stmt1 = $db->query("SELECT * FROM ewapl02.comment WHERE Article_ArticleID = $link ORDER BY CommentDate DESC");
+          $stmt1 = $db->query("SELECT * FROM comment WHERE Article_ArticleID = $link ORDER BY CommentDate DESC");
         }
 
         while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
-            $stmt2 = $db->query("SELECT UserName,UserProfilePicture FROM ewapl02.user WHERE UserID = $row1[User_UserID];");
+            $stmt2 = $db->query("SELECT UserName, UserProfilePicture FROM user WHERE UserID = $row1[User_UserID];");
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
             ?>
             <div class="card" style="margin-bottom: 2%;">
@@ -188,8 +193,8 @@
         						echo $row2['UserProfilePicture'];
         					}
         			?>" style="width:50px;height:50px; margin-right: 15px;">
-      				<b><?php echo $row2['UserName'] ?></b>
-              <b ><span style="float:right;">Date posted: <?php echo $row1['CommentDate'] ?></b>
+      				<b><?php echo $row2['UserName']; if(isset($_SESSION['UserType']) && $_SESSION['UserType'] == "Admin"){ echo'<a class="btn btn-default" href="DeleteComment.php?link='.$row1['CommentID'].'&id='.$_GET['link'].'">Delete comment</a> ';  } ?></b>
+              <b><span style="float:right;">Date posted: <?php echo $row1['CommentDate'] ?></b>
       			  </div>
       			  <div class="card-body">
       				<p class="card-text">

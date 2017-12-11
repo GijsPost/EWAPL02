@@ -6,8 +6,8 @@ include "files/Search.php";
 <script>
 
 function showResult(str) {
-  if (str.length==0) { 
-    document.getElementById("result").innerHTML=""; 
+  if (str.length==0) {
+    document.getElementById("result").innerHTML="";
     return;
   }
   xmlhttp=new XMLHttpRequest();
@@ -39,7 +39,7 @@ function showResult(str) {
         <a class="nav-link" href="index.php">Latest Articles</a>
       </li>
       <li class="nav-item dropdown active">
-        <?php  
+        <?php
           if(isset($_SESSION['UserID'])){
             ?>
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,9 +47,10 @@ function showResult(str) {
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="OwnProfilePage.php">Your profile</a>
-			  <?php if($_SESSION['UserType'] == "Publisher" || $_SESSION['UserType'] == "Admin"){ ?> 
+			  <?php if($_SESSION['UserType'] == "Publisher" || $_SESSION['UserType'] == "Admin"){ ?>
         <a class="dropdown-item" href="YourArticles.php">Your Articles</a>
         <a class="dropdown-item" href="PostNewArticle.php">Post a new article</a> <?php }?>
+        <a class="dropdown-item" href="Following.php">Following</a>
               <a class="dropdown-item" href="LogOut.php">Log out</a>
             </div>
             <?php
@@ -60,8 +61,8 @@ function showResult(str) {
           <?php
           }
           ?>
-       
-        
+
+
       </li>
       <?php if(isset($_SESSION['UserType']) && $_SESSION['UserType'] === "Admin"){
         ?>
@@ -71,7 +72,7 @@ function showResult(str) {
 
     </ul>
     <form>
-      <input type="text" size="30" onkeyup="showResult(this.value)" placeholder="Search" > 
+      <input type="text" size="30" onkeyup="showResult(this.value)" placeholder="Search" >
     </form>
     </div>
 </nav>
@@ -80,7 +81,7 @@ function showResult(str) {
 
 
 <div class="row">
-  
+
   <!-- This is the left column -->
     <div class="col-md"></div>
 
@@ -90,5 +91,5 @@ function showResult(str) {
     </div>
 
   <!-- This is the right column -->
-    <div class="col-md"></div>  
+    <div class="col-md"></div>
 </div>

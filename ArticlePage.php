@@ -133,7 +133,7 @@
       <!-- Post comment -->
       <?php
 
-  			if(empty($_SESSION['UserType']) || $_SESSION['UserType'] != "user"){
+  			if(!isset($_SESSION['UserType'])){
   			?>
   			<div style = "margin-top: 40px; margin-bottom: 40px;">
   				<hr>

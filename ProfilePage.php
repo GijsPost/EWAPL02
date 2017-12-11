@@ -97,7 +97,7 @@
             while ($row = $UserArticles->fetch(PDO::FETCH_ASSOC)) {
               echo '<div class="row">
                       <div class="col-md">
-                        <a href="ArticlePage.php?link='.$row['ArticleID'].'" style="color: inherit; text-decoration:none;">
+                        <a href="ArticlePage.php?link='.$row['ArticleID'].'&sort=new" style="color: inherit; text-decoration:none;">
                           '.$row['ArticleTitle'].'
                           </a>
                       </div>

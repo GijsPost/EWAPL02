@@ -30,6 +30,11 @@
 		$deleteArticleStmt = $db->query("DELETE FROM article WHERE ArticleID = $ArticleID");
 		$deleteArticleStmt->execute();
 		
+		if(strcmp($_SESSION['UserType'], "Admin") == 0){
+			header("Location: Admin/AdminArticle.php");
+			exit();
+		}
+
 		header("Location: YourArticles.php");
 		exit();
 	}

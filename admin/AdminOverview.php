@@ -39,12 +39,7 @@
       <div class="col-md">  
         <a href="AdminArticle.php">Articles</a>
       </div>
-    </div>  
-    <div class="row">
-      <div class="col-md">  
-        <a href="AdminComment.php">Comments</a>
-      </div>
-    </div>   
+    </div>    
     <div class="row">
       <div class="col-md">  
         <a href="../index.php">Go back to normal site</a>

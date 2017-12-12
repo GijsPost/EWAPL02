@@ -36,7 +36,7 @@ function showResult(str) {
         <a class="nav-link" href="Categories.php">Categories</a>
       </li>
 	  <li class="nav-item active">
-        <a class="nav-link" href="index.php">Latest Articles</a>
+        <a class="nav-link" href="latestArticles.php">Latest Articles</a>
       </li>
       <li class="nav-item dropdown active">
         <?php

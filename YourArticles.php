@@ -46,18 +46,18 @@
 			<!-- Start of your articles-->
 			<?php
 				$UserID = $_SESSION['UserID'];
-				$getArticlesStmt = $db->query("SELECT * from article a left join user_article u on a.ArticleID = u.Articles_ArticleID where u.Users_UserID = $UserID");
-				$article = $getArticlesStmt->fetch();
-				if(is_null($article['ArticleTitle'])){
-					echo'
-						<div class="row">
-							<div class="col-sm-8">
-								<h4> You have no articles yet, <a href="PostNewArticle.php">post a article!</a></h4>
-							</div>	
-						</div>	
-					';
-				}else{
-				while($article = $getArticlesStmt->fetch(PDO::FETCH_ASSOC)){
+				$getArticlesStmt = $db->query("SELECT * from article a left join user_article u on a.ArticleID = u.Articles_ArticleID where u.Users_UserID = ".$UserID."");
+				// $article = $getArticlesStmt->fetch();
+				// if(is_null($article['ArticleTitle'])){
+				// 	echo'
+				// 		<div class="row">
+				// 			<div class="col-sm-8">
+				// 				<h4> You have no articles yet, <a href="PostNewArticle.php">post a article!</a></h4>
+				// 			</div>	
+				// 		</div>	
+				// 	';
+				// }else{
+				while($article = $getArticlesStmt->fetch()){
 			?>
 				<div class="alert alert-primary clearfix" role="alert">
 					<div class="row">
@@ -65,7 +65,7 @@
 					<b><?php echo $article['ArticleTitle'];?></b>
 					</div>
 					<div class="col-sm-6">
-					<a  href="ArticlePage.php?link=<?php echo $article['ArticleID'];?>"><button type="button" class="btn btn-success">View</button></a>
+					<a  href="ArticlePage.php?link=<?php echo $article['ArticleID'];?>&sort=new"><button type="button" class="btn btn-success">View</button></a>
 					<a  href="EditArticle.php?articleToEdit=<?php echo $article['ArticleID'];?>"><button type="button" class="btn btn-warning">Edit</button></a>
 					<button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#M<?php echo $article['ArticleID'];?>">Delete</button>
 					</div>
@@ -94,7 +94,7 @@
 				</div>
 				
 			<?php
-			}}
+			}//}
 			
 
 			?>

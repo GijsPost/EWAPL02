@@ -82,7 +82,7 @@
 
 	    if($num_rows3 > 0) {
 	        $vorige = '';
-	  		echo '<h1>Categorys</h1>';
+	  		echo '<h1>Categories</h1>';
 	        while($row = $Categorys->fetch()) {
 	            if ($vorige !== ucfirst(substr($row['CategoryName'],0,1))){   
 	                echo'

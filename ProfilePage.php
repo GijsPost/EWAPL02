@@ -104,31 +104,34 @@
 
             <!-- if user is logged in and show un/follow button -->
             <?php
+            if(isset($_SESSION["UserID"])){
+              if($_SESSION["UserID"] != $UserData['UserID']){
+                $getFollowingStatusStmt = $db->prepare("SELECT * FROM ewapl02.user_follow WHERE Follower_UserID=? AND Following_UserID=?;");
+                $getFollowingStatusStmt->bindParam(1, $_SESSION["UserID"]);
+                $getFollowingStatusStmt->bindParam(2, $UserData['UserID']);
+                $getFollowingStatusStmt->execute();
+                $followingStatus = $getFollowingStatusStmt->fetch(PDO::FETCH_ASSOC);
 
-              $getFollowingStatusStmt = $db->prepare("SELECT * FROM ewapl02.user_follow WHERE Follower_UserID=? AND Following_UserID=?;");
-              $getFollowingStatusStmt->bindParam(1, $_SESSION["UserID"]);
-              $getFollowingStatusStmt->bindParam(2, $UserData['UserID']);
-              $getFollowingStatusStmt->execute();
-              $followingStatus = $getFollowingStatusStmt->fetch(PDO::FETCH_ASSOC);
 
-
-              if(!empty($_SESSION['UserType']) && !$followingStatus){
-              ?>
-                <form method="POST" action="">
-                  <input type="hidden" name="follower" value="<?php echo $_SESSION["UserID"] ?>">
-                  <input type="hidden" name="following" value="<?php echo $UserData['UserID'] ?>">
-                  <button type="submit" class="btn btn-secondary" value="follow" name="follow" style="float: right;">Follow</button>
-                </form>
-            <?php
-              }elseif ($followingStatus) {
+                if(!empty($_SESSION['UserType']) && !$followingStatus){
                 ?>
-                <form method="POST" action="">
-                  <input type="hidden" name="follower" value="<?php echo $_SESSION["UserID"] ?>">
-                  <input type="hidden" name="following" value="<?php echo $UserData['UserID'] ?>">
-                  <button type="submit" class="btn btn-secondary" value="unfollow" name="unfollow" style="float: right;" title="Click to unsubscribe.">&#10004; Following</button>
-                </form>
-                <?php
-              }?>
+                  <form method="POST" action="">
+                    <input type="hidden" name="follower" value="<?php echo $_SESSION["UserID"] ?>">
+                    <input type="hidden" name="following" value="<?php echo $UserData['UserID'] ?>">
+                    <button type="submit" class="btn btn-secondary" value="follow" name="follow" style="float: right; margin-right: 15%;">Follow</button>
+                  </form>
+              <?php
+                }elseif ($followingStatus) {
+                  ?>
+                  <form method="POST" action="">
+                    <input type="hidden" name="follower" value="<?php echo $_SESSION["UserID"] ?>">
+                    <input type="hidden" name="following" value="<?php echo $UserData['UserID'] ?>">
+                    <button type="submit" class="btn btn-secondary" value="unfollow" name="unfollow" style="float: right; margin-right: 15%;" title="Click to unsubscribe.">&#10004; Following</button>
+                  </form>
+                  <?php
+                }
+              }
+            }?>
 
           </div>
         </div>
